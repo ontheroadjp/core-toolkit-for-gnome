@@ -35,6 +35,22 @@ sudo apt install -y \
     gocryptfs
 
 # -----------------------------------------
+# htop:     Monitoring CPU and Memory Usage
+# nethogs:  Monitor network traffic by process
+# iftop:    Monitor network traffic by destination
+# whois:    Perform a DNS reverse lookup
+# arp-scan: List devices on the network
+echo '----------------------------'
+echo 'Install system monitor tools ...'
+echo '----------------------------'
+sudo apt install -y \
+    htop \
+    nethogs \
+    iftop \
+    whois \
+    arp-scan
+
+# -----------------------------------------
 # yt-dlp        downloader
 # ffmpeg        encoder
 # mpv           music player
