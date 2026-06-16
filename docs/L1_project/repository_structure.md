@@ -18,16 +18,21 @@
 │   └── bin/
 │       └── gnome-overview-toggle         # GNOME Overview トグルスクリプト
 └── scripts/
-    └── battery-alert/                    # バッテリー低下通知（Python + systemd timer）
-        ├── battery_alert.py
-        ├── .env.example
+    ├── battery-alert/                    # バッテリー低下通知（Python + systemd timer）
+    │   ├── battery_alert.py
+    │   ├── .env.example
+    │   ├── install.sh
+    │   ├── README.md
+    │   ├── tests/
+    │   │   └── test_battery_alert.py
+    │   └── .config/systemd/user/
+    │       ├── battery-alert.service
+    │       └── battery-alert.timer
+    └── mpv-player/                       # mpv music launcher（Python）
+        ├── mpv-player.py
         ├── install.sh
-        ├── README.md
-        ├── tests/
-        │   └── test_battery_alert.py
-        └── .config/systemd/user/
-            ├── battery-alert.service
-            └── battery-alert.timer
+        └── tests/
+            └── test_mpv_player.py
 ```
 
 (`docs/` は本コマンドにより新規追加。`.git/` は省略)
@@ -75,6 +80,14 @@
 （テンプレート `__POLL_INTERVAL__` を実値で置換）。
 `tests/test_battery_alert.py` に `unittest` ベースのテストがある。
 詳細は [scripts/battery-alert/README.md](../../scripts/battery-alert/README.md) 参照。
+
+### `scripts/mpv-player/`
+`~/Music` 配下の音声/動画ファイルを検索し、`mpv --no-video` で再生する
+Python 製 launcher 一式。`mpv-player.py` は起動時に main menu を表示し、
+個別選択、検索語に一致する全件、前回 playlist のいずれかを再生対象にする。
+新規 playlist は `~/Music/playlist/mpv-player.m3u` に上書き保存される。
+`install.sh` は `mpv-player.py` を `~/.local/bin/music` へシンボリックリンク
+する。`tests/test_mpv_player.py` に `unittest` ベースのテストがある。
 
 ## 未確認事項
 
