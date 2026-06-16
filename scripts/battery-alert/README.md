@@ -34,7 +34,20 @@
   | `NOTIFY_THRESHOLDS` | 通知する残量（%）。カンマ区切りで複数指定可能（例: `80,50,30`） | `50` |
   | `POLL_INTERVAL` | ポーリング間隔（秒）。`battery_alert.py` 自体は読まず、`install.sh` が systemd timer に反映する | `120` |
 
-  `.env` はリポジトリにコミットしません（`.gitignore` 参照）。**`.env` を変更した場合は [5. インストール](#5-インストール) の `install.sh` を再実行してください**（`POLL_INTERVAL` が systemd timer に反映されるのは `install.sh` 実行時のみです）。
+  `.env` はリポジトリにコミットしません（`.gitignore` 参照）。
+
+  ### `.env` を更新する手順
+
+  1. `.env` を編集する（例: `NOTIFY_THRESHOLDS=80,50,30`）
+  2. `install.sh` を再実行する（`POLL_INTERVAL` が systemd timer に反映されるのは `install.sh` 実行時のみのため）
+     ```bash
+       ./install.sh
+     ```
+  3. 反映された内容を確認する
+     ```bash
+       cat ~/.config/systemd/user/battery-alert.timer
+     ```
+  4. `NOTIFY_THRESHOLDS` のみを変更した場合は手順2・3は不要（`battery_alert.py` は実行毎に `.env` を読むため、次回ポーリングから即反映される）
 
   ---
 
