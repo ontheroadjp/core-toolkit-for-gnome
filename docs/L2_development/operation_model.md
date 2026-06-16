@@ -91,15 +91,32 @@ systemctl --user enable --now battery-alert.timer
   `POLL_INTERVAL` が systemd timer に反映されない
   （`scripts/battery-alert/README.md` 参照）。
 
+## 6. mpv music launcher のインストールと実行
+
+```bash
+scripts/mpv-player/install.sh
+music
+```
+
+- `install.sh` は `scripts/mpv-player/mpv-player.py` を
+  `~/.local/bin/music` へシンボリックリンクする。`sudo` は不要。
+- `music` は起動時に main menu を表示し、`~/Music` 配下の音声/動画ファイル
+  から playlist を作成する。
+- playlist は `~/Music/playlist/mpv-player.m3u` に上書き保存される。
+- 再生は `mpv --no-video` で実行される。
+
 ## ビルド・テストについて
 
 リポジトリ全体としてのビルドプロセス・CIは存在しない（`.github/` 不在を
-確認済み）。`scripts/battery-alert/` には `unittest` ベースのテスト
-（`tests/test_battery_alert.py`）があり、以下で実行できる
+確認済み）。`scripts/battery-alert/` と `scripts/mpv-player/` には
+`unittest` ベースのテストがあり、以下で実行できる
 （追加インストール不要、標準ライブラリのみ）。
 
 ```bash
 cd scripts/battery-alert
+python3 -m unittest discover -s tests
+
+cd ../../scripts/mpv-player
 python3 -m unittest discover -s tests
 ```
 

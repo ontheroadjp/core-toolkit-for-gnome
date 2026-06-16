@@ -117,3 +117,19 @@ systemd timer が定期実行する構成（常駐プロセスなし）。
 | ポーリング間隔 | `.env` の `POLL_INTERVAL`（デフォルト `120` 秒）。`battery_alert.py` 自身は読まない。`install.sh` が `battery-alert.timer` テンプレートの `__POLL_INTERVAL__` を置換して `~/.config/systemd/user/` に書き出す | `install.sh`、`.config/systemd/user/battery-alert.timer` |
 | 通知方法 | `notify-send -u critical` | `battery_alert.py` `send_notification` |
 | テスト | `tests/test_battery_alert.py`（`unittest`、19件） | ファイル内容確認済み |
+
+## 6. `scripts/mpv-player/` — mpv music launcher
+
+`mpv-player.py` は標準ライブラリのみの Python スクリプトで、起動時に
+main menu を表示する。対象ディレクトリは `~/Music`、playlist の保存先は
+`~/Music/playlist/mpv-player.m3u`。
+
+| 項目 | 内容 | 根拠 |
+|---|---|---|
+| メディア検出 | `~/Music` 配下を再帰検索し、音声/動画の拡張子を幅広く対象にする | `mpv-player.py` `MEDIA_EXTENSIONS` / `discover_media_files` |
+| 個別選択 | 検出したメディアを `fzf --multi` に渡し、選択されたファイルで playlist を作成 | `mpv-player.py` `select_media_with_fzf` / `create_playlist_from_selection` |
+| 検索結果再生 | 入力された検索語を相対パスに対して大小文字無視で照合し、一致した全件で playlist を作成 | `mpv-player.py` `filter_media_by_query` / `create_playlist_from_search` |
+| 前回 playlist | 既存の `mpv-player.m3u` に実エントリがある場合のみ再生へ進む | `mpv-player.py` `playlist_has_entries` / `replay_existing_playlist` |
+| 再生方法 | `mpv --no-video --playlist=<playlist>` を実行。リピートは `--loop-playlist=inf`、ランダムは `--shuffle` を追加 | `mpv-player.py` `build_mpv_command` / `play_playlist` |
+| インストール | `~/.local/bin/music` を `mpv-player.py` へのシンボリックリンクとして作成 | `install.sh` |
+| テスト | `tests/test_mpv_player.py`（`unittest`、9件） | ファイル内容確認済み |

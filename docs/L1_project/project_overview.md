@@ -10,7 +10,7 @@ Lenovo ThinkPad T480s 上の GNOME (Ubuntu) 環境を再現可能にするため
 
 | 項目 | 内容 | 根拠 |
 |---|---|---|
-| 言語/ランタイム | POSIX sh / bash | `t480s.sh:1`、`t480s_apps.sh:1` は `#!/bin/bash`、`.local/bin/gnome-overview-toggle:1` は `#!/bin/sh` |
+| 言語/ランタイム | POSIX sh / bash / Python 3 | `t480s.sh:1`、`t480s_apps.sh:1` は `#!/bin/bash`、`.local/bin/gnome-overview-toggle:1` は `#!/bin/sh`、`scripts/*/*.py` は `#!/usr/bin/env python3` |
 | パッケージマネージャ（プロジェクト自体） | なし | `package.json` 等のマニフェスト不在を確認 |
 | OSパッケージマネージャ（実行対象） | apt（Ubuntu/Debian系） | `t480s_apps.sh:9,29,39` |
 | CI | なし | `.github/` ディレクトリ不在を確認 |
@@ -64,11 +64,17 @@ OSディストリビューションは Ubuntu 24.04.4 LTS (Noble Numbat)。
      ファイルは存在しない — 詳細は
      [repository_structure.md](repository_structure.md) の未確認事項を参照）。
 
+5. **mpv music launcher** — `scripts/mpv-player/`
+   - `~/Music` 配下の音声/動画ファイルを対象に playlist を作成し、
+     `mpv --no-video` で再生する（`scripts/mpv-player/mpv-player.py`）。
+   - `install.sh` で `~/.local/bin/music` へのシンボリックリンクを作成する。
+   - playlist は `~/Music/playlist/mpv-player.m3u` に上書き保存される。
+
 ## このプロジェクトではないもの（スコープ外であることの確認）
 
 - Web/モバイルアプリケーションではない（フレームワーク・ビルド設定が
   存在しないことを確認済み）。
 - データベース・APIサーバーを持たない（該当する実装ファイルが
   存在しないことを確認済み）。
-- 自動テスト・CIパイプラインを持たない（`.github/` 不在、テストランナー
-  設定不在を確認済み）。
+- CIパイプラインを持たない（`.github/` 不在を確認済み）。一部の
+  `scripts/` 配下 Python ツールには `unittest` ベースのテストがある。
