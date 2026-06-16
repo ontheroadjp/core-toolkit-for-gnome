@@ -1,0 +1,12 @@
+[Unit]
+Description=Timer for Battery Alert Service
+
+[Timer]
+# 起動後・以降ともに .env の POLL_INTERVAL 秒間隔で実行します
+# このファイルはテンプレートであり、install.sh が値を置換した結果を
+# ~/.config/systemd/user/ に書き出します（詳細は README.md 参照）
+OnBootSec=__POLL_INTERVAL__sec
+OnUnitActiveSec=__POLL_INTERVAL__sec
+
+[Install]
+WantedBy=timers.target
