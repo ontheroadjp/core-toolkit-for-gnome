@@ -3,9 +3,9 @@
 # -----------------------------------------
 # Install
 # -----------------------------------------
-
-# -----------------------------------------
-# dev
+echo '----------------------------'
+echo 'Install dev tools ...'
+echo '----------------------------'
 sudo apt update && sudo apt install -y \
     build-essential \
     curl \
@@ -20,14 +20,16 @@ sudo apt update && sudo apt install -y \
     yq
 
 # -----------------------------------------
-# rofi          launcher
+# rofi          launcher    # deprected
 # hyperfile     benchmaker
 # rclone        google drive / dropbox
 # gocryptfs     encript dir
 # - gocryptfs ~/hoge.env ~/hoge   # mount
 # - fusermount -u ~/hoge          # unmount
+echo '----------------------------'
+echo 'Install system utilities ...'
+echo '----------------------------'
 sudo apt install -y \
-    rofi \
     hyperfile \
     rclone \
     gocryptfs
@@ -36,13 +38,17 @@ sudo apt install -y \
 # yt-dlp        downloader
 # ffmpeg        encoder
 # mpv           music player
+echo '----------------------------'
+echo 'Install applications ...'
+echo '----------------------------'
 sudo apt install -y \
     yt-dlp \
     ffmpeg \
     mpv
 
-# -----------------------------------------
-# keyd
+echo '----------------------------'
+echo 'Install keyd ...'
+echo '----------------------------'
 # sudo keyd monitor
 if ! command -v keyd >/dev/null 2>&1; then
     sudo add-apt-repository ppa:keyd-team/ppa
@@ -53,8 +59,9 @@ else
     echo "keyd is already installd."
 fi
 
-# -----------------------------------------
-# mise
+echo '----------------------------'
+echo 'Install mise & node.js ...'
+echo '----------------------------'
 MISE_BIN="$(command -v mise 2>/dev/null || true)"
 if [[ -z "${MISE_BIN}" ]]; then
     curl https://mise.run | sh
@@ -62,8 +69,9 @@ if [[ -z "${MISE_BIN}" ]]; then
 fi
 "${MISE_BIN}" use -g node@24
 
-# -----------------------------------------
-# gh
+echo '----------------------------'
+echo 'Install gh ...'
+echo '----------------------------'
 if ! command -v gh >/dev/null 2>&1; then
     sudo mkdir -p -m 755 /etc/apt/keyrings
     wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null
@@ -75,8 +83,9 @@ else
     echo "gh is already installd."
 fi
 
-# -----------------------------------------
-# ghq
+echo '----------------------------'
+echo 'Install ghq ...'
+echo '----------------------------'
 if ! command -v ghq >/dev/null 2>&1; then
     echo "Installing ghq ..."
     cd /tmp || exit
@@ -88,24 +97,27 @@ else
     echo "ghq is already installd."
 fi
 
-# -----------------------------------------
-# claude code
+echo '----------------------------'
+echo 'Install claude code ...'
+echo '----------------------------'
 if ! command -v claude >/dev/null 2>&1; then
     curl -fsSL https://claude.ai/install.sh | bash
 else
     echo "claude code is already installd."
 fi
 
-# -----------------------------------------
-# codex
+echo '----------------------------'
+echo 'Install codex ...'
+echo '----------------------------'
 if ! command -v codex >/dev/null 2>&1; then
     npm install -g @openai/codex
 else
     echo "codex is already installd."
 fi
 
-# -----------------------------------------
-# chrome
+echo '----------------------------'
+echo 'Install chrome ...'
+echo '----------------------------'
 if ! command -v google-chrome >/dev/null 2>&1; then
     echo "Installing Google Chrome ..."
     cd /tmp || exit
@@ -116,8 +128,9 @@ else
     echo "Google Chrome is already installd."
 fi
 
-# -----------------------------------------
-# yt-dlp
+echo '----------------------------'
+echo 'Install yt-dlp ...'
+echo '----------------------------'
 if ! command -v yt-dlp >/dev/null 2>&1; then
     echo "Installing yt-dlp ..."
     sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
