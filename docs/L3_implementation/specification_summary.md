@@ -1,0 +1,104 @@
+# 実装仕様サマリ
+
+DB・APIは存在しないため `database.md` / `api.md` は生成していない
+（生成条件: DB/APIの実装が存在する場合のみ。本リポジトリには該当実装なし）。
+
+## 1. `t480s.sh` — GNOME 設定スクリプト
+
+全行 `gsettings set <schema> <key> <value>` の形式（一部 `sudo tee` で
+sysfs に書き込み）。設定一覧:
+
+| schema.key | 値 | 行 |
+|---|---|---|
+| `org.gnome.desktop.interface enable-animations` | `true` | `t480s.sh:7` |
+| `org.gnome.desktop.peripherals.keyboard repeat` | `true` | `t480s.sh:12` |
+| `org.gnome.desktop.peripherals.keyboard delay` | `140` | `t480s.sh:13` |
+| `org.gnome.desktop.peripherals.keyboard repeat-interval` | `10` | `t480s.sh:14` |
+| `org.gnome.desktop.wm.keybindings switch-input-source` | `['<Control>space']` | `t480s.sh:26` |
+| `org.gnome.desktop.wm.preferences mouse-button-modifier` | `'<Ctrl>'` | `t480s.sh:31` |
+| `org.gnome.desktop.wm.keybindings move-to-side-w` | `['<Ctrl>Left']` | `t480s.sh:38` |
+| `org.gnome.desktop.wm.keybindings move-to-side-e` | `['<Ctrl>Right']` | `t480s.sh:39` |
+| `org.gnome.desktop.interface font-hinting` | `'full'` | `t480s.sh:46` |
+| `org.gnome.desktop.interface font-antialiasing` | `'grayscale'` | `t480s.sh:47` |
+| `/sys/class/power_supply/BAT0/charge_start_threshold` | `30` | `t480s.sh:53` |
+| `/sys/class/power_supply/BAT0/charge_stop_threshold` | `85` | `t480s.sh:54` |
+
+コメントアウトされた未採用候補（`t480s.sh:19-21`, `34-36`）も
+ファイル内に残されている（ウィンドウ最大化・タイル化の別キーバインド案）。
+
+## 2. `t480s_apps.sh` — パッケージ/ツール導入スクリプト
+
+### apt 経由（存在チェックなし、無条件実行）
+
+- 開発基盤: `build-essential curl tree git gh tmux fzf bat vim-gtk3 jq yq`
+  (`t480s_apps.sh:9-20`)
+- ランチャー/暗号化/クラウド: `rofi hyperfile rclone gocryptfs`
+  (`t480s_apps.sh:29-33`)
+- メディア: `yt-dlp ffmpeg mpv` (`t480s_apps.sh:39-42`)
+
+### 条件付きインストール（`command -v` で存在確認）
+
+| ツール | 確認方法 | インストール手段 | 行 |
+|---|---|---|---|
+| `keyd` | `command -v keyd` | PPA (`ppa:keyd-team/ppa`) + apt、`systemctl enable --now keyd` | `t480s_apps.sh:47-54` |
+| `mise` | `command -v mise` | `curl https://mise.run \| sh` | `t480s_apps.sh:58-61` |
+| `gh` | `command -v gh` | apt キーリング登録 + apt install | `t480s_apps.sh:67-76` |
+| `ghq` | `command -v ghq` | GitHub Releases から zip 取得 → `usr/local/bin` へ配置 | `t480s_apps.sh:80-89` |
+| `claude` | `command -v claude` | `curl -fsSL https://claude.ai/install.sh \| bash` | `t480s_apps.sh:93-97` |
+| `codex` | `command -v codex` | `npm install -g @openai/codex` | `t480s_apps.sh:101-105` |
+| `google-chrome` | `command -v google-chrome` | `.deb` を `wget` → `apt install ./*.deb` | `t480s_apps.sh:109-117` |
+| `yt-dlp` | `command -v yt-dlp` | 存在しなければ単体バイナリを `wget`、存在すれば `yt-dlp -U` で自己更新 | `t480s_apps.sh:121-128` |
+
+`mise` 導入後、`mise use -g node@24` で Node.js 24 をグローバル設定
+（`t480s_apps.sh:63`）。
+
+## 3. `.config/alacritty/alacritty.toml` — Alacritty 設定
+
+- `import`: アクティブテーマは `theme/tokyo-night.toml`
+  （`alacritty.toml:5`、`dracula.toml` は同ファイル6行目でコメントアウト）
+- `live_config_reload = true`（`alacritty.toml:9`）
+- フォント: T480s向けに `monospace` size 12、`offset = {x=1, y=6}`
+  （`alacritty.toml:20-29`）。MBP15向け設定は丸ごとコメントアウト
+  （`alacritty.toml:38-43`）。
+- ウィンドウ: 装飾なし(`decorations = "None"`)、`Windowed` 起動
+  （`alacritty.toml:46-50`）。
+- カラー: `colors.primary` の背景/前景を個別オーバーライドしつつ、
+  一部の `normal`/`bright` 色のみ上書き（`alacritty.toml:56-80`）。
+  上書きされていない色はインポート先テーマ(`tokyo-night.toml`)の値を使う
+  （Alacrittyの`import`は浅いマージである前提。alacritty側の仕様であり
+  本リポジトリ内では検証不能 — 未確認）。
+- キーバインド: `Ctrl+Shift+F12` でシンプルフルスクリーン切替、
+  `Ctrl+↑/↓` でフォントサイズ変更（`alacritty.toml:84-88`）。
+
+### テーマファイル（`theme/*.toml`）
+
+3ファイルとも `[colors.primary/normal/bright]` のみを定義する
+パレット専用ファイル（24〜76行）。`tokyo-night.toml` と
+`tokyo-night-storm.toml` は背景色のみが異なる（`0x1a1b26` vs `0x24283b`、
+各ファイル2行目）。
+
+## 4. `.local/bin/gnome-overview-toggle` — Overview トグル
+
+```
+gdbus call --session --dest org.gnome.Shell \
+  --object-path /org/gnome/Shell \
+  --method org.freedesktop.DBus.Properties.Get \
+  org.gnome.Shell OverviewActive
+```
+で現在値を取得し（`gnome-overview-toggle:3-10`）、`true`/`false` を
+反転させて `org.freedesktop.DBus.Properties.Set` で書き戻す
+（`gnome-overview-toggle:12-22`）。外部コマンド依存は `gdbus` のみ。
+
+このリポジトリには記録されていないが、実機の `dconf` 状態
+（`dconf dump /org/gnome/settings-daemon/plugins/media-keys/
+custom-keybindings/custom0/`）では以下が確認できた:
+
+```
+binding='<Shift><Control>space'
+command='~/.local/bin/gnome-overview-toggle'
+name='Gunome Runcher'
+```
+
+これはライブシステムの観測結果であり、リポジトリのファイル内容からは
+導出できない（[repository_structure.md](../L1_project/repository_structure.md)
+の未確認事項2を参照）。

@@ -1,0 +1,80 @@
+# gnome-toolkit
+
+Lenovo ThinkPad T480s (Ubuntu 24.04 LTS / GNOME) を再現可能にセットアップするための
+個人用シェルスクリプト・dotfiles 集。詳細な設計意図は
+[docs/L0_concept/concept.md](docs/L0_concept/concept.md) を参照。
+
+## Features
+
+- `t480s.sh` — GNOME デスクトップ設定（アニメーション、キーリピート、
+  入力ソース切り替え、ウィンドウタイル化キーバインド、フォントレンダリング、
+  バッテリー充電閾値）を `gsettings` で一括適用。
+- `t480s_apps.sh` — 開発ツール・CLIツール一式（git, gh, tmux, fzf, bat,
+  rofi, gocryptfs, yt-dlp, ffmpeg, mpv, keyd, mise+Node.js, ghq,
+  Claude Code, Codex CLI, Google Chrome 等）を `apt` および各公式
+  インストーラ経由で導入。
+- `.config/alacritty/` — Alacritty 設定 + 3種類の配色テーマ
+  （tokyo-night / tokyo-night-storm / dracula）。
+- `.local/bin/gnome-overview-toggle` — GNOME Shell の Activities Overview
+  を `gdbus` でトグルするスクリプト（カスタムキーバインド用）。
+
+## Installation
+
+```bash
+git clone <this-repo> ~/WORKSPACE/gnome-toolkit
+cd ~/WORKSPACE/gnome-toolkit
+
+# dotfiles をホームディレクトリにリンク
+ln -s "$(pwd)/.config/alacritty" ~/.config/alacritty
+ln -s "$(pwd)/.local/bin/gnome-overview-toggle" ~/.local/bin/gnome-overview-toggle
+```
+
+このリンク作成手順はリポジトリ内のスクリプトには含まれておらず、
+実機の状態から逆算した手順。詳細は
+[docs/L2_development/operation_model.md](docs/L2_development/operation_model.md) を参照。
+
+## Usage
+
+```bash
+# パッケージ・CLIツールのセットアップ（sudo必須、ネットワーク必須）
+./t480s_apps.sh
+
+# GNOME デスクトップ設定の適用(sudo必須の項目を含む)
+./t480s.sh
+```
+
+Alacritty の配色テーマを切り替えるには、
+`.config/alacritty/alacritty.toml` の `import` 行のコメントを入れ替える
+（`live_config_reload = true` のため保存と同時に反映される）。
+
+詳細な手順・前提条件は
+[docs/L2_development/operation_model.md](docs/L2_development/operation_model.md) を参照。
+
+## Configuration
+
+- Alacritty の配色テーマは `.config/alacritty/theme/*.toml` に3種類用意されており、
+  `alacritty.toml` の `import` 行で切り替える（GUIやコマンドでの切り替え機構はない）。
+- バッテリー充電のしきい値（`t480s.sh` 内、30%/85%）は T480s の
+  `/sys/class/power_supply/BAT0/*` を直接書き換える。再起動後も
+  永続化したい場合は `tlp` の利用が必要（`t480s.sh` 末尾のコメント参照）。
+
+## Design Principles
+
+- 単一マシン・単一ユーザーの個人用ツールであり、汎用化・抽象化は行わない。
+- シェルスクリプト（bash / sh）のみで構成し、専用の言語・ビルドツール・
+  パッケージマネージャは導入しない。
+- パッケージ導入は OS 標準の `apt` を第一手段とし、`apt` にないものは
+  各ツール公式の手順を個別に踏む。
+- アプリケーションロジック（DB・API・フロントエンド）はこのリポジトリの
+  スコープに含めない。
+
+詳細は [docs/L0_concept/policy.md](docs/L0_concept/policy.md) を参照。
+
+## Documentation
+
+設計判断の根拠やディレクトリ責務、実装仕様の詳細は `docs/` 配下を参照。
+
+- [docs/L0_concept/](docs/L0_concept/) — コンセプト・ポリシー
+- [docs/L1_project/](docs/L1_project/) — プロジェクト概要・リポジトリ構造
+- [docs/L2_development/](docs/L2_development/) — 運用手順・整合性確認
+- [docs/L3_implementation/](docs/L3_implementation/) — 実装仕様サマリ

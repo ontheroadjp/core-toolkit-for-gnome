@@ -1,0 +1,35 @@
+{
+  "repo_id": "gnome-toolkit",
+  "repo_type": "shell-script-dotfiles",
+  "package_manager": "none",
+  "package_manager_evidence": "No package.json/go.mod/Gemfile/requirements.txt/Cargo.toml found at repo root (confirmed by directory listing). System package installs inside scripts use apt (t480s_apps.sh:9,29,39) but that manages the OS, not this repo.",
+  "ci_defined": false,
+  "ci_evidence": ".github/ does not exist in this repo (confirmed: find .github -> not found).",
+  "doc_roots": [
+    "docs/L0_concept",
+    "docs/L1_project",
+    "docs/L2_development",
+    "docs/L3_implementation"
+  ],
+  "commands": {
+    "apply_gnome_settings": {
+      "run": "./t480s.sh",
+      "evidence": "t480s.sh:1 (#!/bin/bash), file mode 755",
+      "note": "Several lines use sudo (t480s.sh:53-54); not idempotent-safe to re-run blindly on a different machine model."
+    },
+    "install_packages_and_tools": {
+      "run": "./t480s_apps.sh",
+      "evidence": "t480s_apps.sh:1 (#!/bin/bash), file mode 755",
+      "note": "Installs apt packages and several tools via curl/wget pipelines (t480s_apps.sh:60,94,123); requires sudo and network access."
+    },
+    "toggle_gnome_overview": {
+      "run": ".local/bin/gnome-overview-toggle",
+      "evidence": ".local/bin/gnome-overview-toggle:1 (#!/bin/sh), file mode 755",
+      "note": "Designed to be invoked via a keyboard shortcut, not run directly by a human. Currently bound on this machine to Shift+Ctrl+Space via dconf custom-keybindings/custom0 (observed via `dconf dump`, not stored in this repo)."
+    }
+  },
+  "primary_docs": {
+    "investigation": "docs/L3_implementation/specification_summary.md",
+    "structure": "docs/L1_project/repository_structure.md"
+  }
+}
