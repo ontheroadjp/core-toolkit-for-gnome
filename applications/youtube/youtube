@@ -1,0 +1,81 @@
+#!/bin/bash
+set -eu
+
+CDP_URL="http://localhost:9222"
+
+if [ $# -gt 0 ]; then
+    QUERY=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(' '.join(sys.argv[1:])))" "$@")
+    TARGET_URL="https://www.youtube.com/results?search_query=${QUERY}"
+else
+    TARGET_URL="https://www.youtube.com/"
+fi
+
+if ! curl -sf "${CDP_URL}/json/version" > /dev/null 2>&1; then
+    /home/diego/.local/bin/google-chrome-cdp "${TARGET_URL}" > /dev/null 2>&1 &
+    disown
+    exit 0
+fi
+
+YT_TAB=$(curl -sf "${CDP_URL}/json" | python3 -c "
+import json, sys
+for tab in json.load(sys.stdin):
+    if 'youtube.com' in tab.get('url', '') and tab.get('type') == 'page':
+        print(tab['id'], tab['webSocketDebuggerUrl'])
+        break
+")
+
+if [ -n "$YT_TAB" ]; then
+    YT_TAB_ID=$(echo "$YT_TAB" | cut -d' ' -f1)
+    YT_WS_URL=$(echo "$YT_TAB" | cut -d' ' -f2)
+    python3 - "$YT_WS_URL" "$TARGET_URL" <<'EOF'
+import sys, socket, base64, struct, json, urllib.parse
+
+def ws_connect(url):
+    parsed = urllib.parse.urlparse(url)
+    s = socket.socket()
+    s.connect((parsed.hostname, parsed.port or 9222))
+    key = base64.b64encode(b'claude-code-cdp-key').decode()
+    s.send((
+        f"GET {parsed.path} HTTP/1.1\r\n"
+        f"Host: {parsed.hostname}:{parsed.port}\r\n"
+        "Upgrade: websocket\r\n"
+        "Connection: Upgrade\r\n"
+        f"Sec-WebSocket-Key: {key}\r\n"
+        "Sec-WebSocket-Version: 13\r\n\r\n"
+    ).encode())
+    buf = b''
+    while b'\r\n\r\n' not in buf:
+        buf += s.recv(4096)
+    return s
+
+def ws_send(s, msg):
+    data = msg.encode()
+    n = len(data)
+    frame = bytearray([0x81, 0x80 | (n if n < 126 else 126)])
+    if n >= 126:
+        frame += struct.pack('>H', n)
+    frame += b'\x00\x00\x00\x00'  # mask key (all zeros = no transform)
+    frame += data
+    s.send(bytes(frame))
+
+def ws_recv(s):
+    h = s.recv(2)
+    n = h[1] & 0x7F
+    if n == 126:
+        n = struct.unpack('>H', s.recv(2))[0]
+    buf = b''
+    while len(buf) < n:
+        buf += s.recv(n - len(buf))
+    return buf.decode()
+
+ws_url, target_url = sys.argv[1], sys.argv[2]
+s = ws_connect(ws_url)
+ws_send(s, json.dumps({"id": 1, "method": "Page.navigate", "params": {"url": target_url}}))
+ws_recv(s)
+s.close()
+EOF
+    curl -sf "${CDP_URL}/json/activate/${YT_TAB_ID}" > /dev/null
+else
+    /home/diego/.local/bin/google-chrome-cdp "${TARGET_URL}" > /dev/null 2>&1 &
+    disown
+fi

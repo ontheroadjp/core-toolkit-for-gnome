@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=YouTube
+Comment=YouTubeを開く
+Exec=/home/diego/.local/bin/youtube
+Icon=/home/diego/repo/github.com/ontheroadjp/core-toolkit-for-gnome/applications/icons/youtube.svg
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;Video;
