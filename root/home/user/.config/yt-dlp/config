@@ -1,0 +1,4 @@
+--js-runtimes node
+--embed-metadata
+--embed-thumbnail
+--merge-output-format mp4
