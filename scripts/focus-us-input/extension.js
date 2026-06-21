@@ -1,7 +1,15 @@
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Keyboard from 'resource:///org/gnome/shell/ui/status/keyboard.js';
+
+const DBUS_IFACE = `
+<node>
+  <interface name="org.gnome.Shell.Extensions.FocusUsInput">
+    <method name="SwitchToUs"/>
+  </interface>
+</node>`;
 
 const TERMINAL_IDENTIFIERS = [
     'alacritty',
@@ -44,9 +52,25 @@ export default class FocusUsInputExtension extends Extension {
         );
         this._idleId = 0;
         this._scheduleSwitch();
+
+        this._dbusId = Gio.DBus.session.own_name(
+            'org.gnome.Shell.Extensions.FocusUsInput',
+            Gio.BusNameOwnerFlags.NONE,
+            null, null
+        );
+        this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(DBUS_IFACE, this);
+        this._dbusImpl.export(Gio.DBus.session, '/org/gnome/Shell/Extensions/FocusUsInput');
     }
 
     disable() {
+        if (this._dbusImpl) {
+            this._dbusImpl.unexport();
+            this._dbusImpl = null;
+        }
+        if (this._dbusId) {
+            Gio.DBus.session.unown_name(this._dbusId);
+            this._dbusId = 0;
+        }
         if (this._focusChangedId) {
             global.display.disconnect(this._focusChangedId);
             this._focusChangedId = 0;
@@ -56,6 +80,12 @@ export default class FocusUsInputExtension extends Extension {
             this._idleId = 0;
         }
         this._inputSourceManager = null;
+    }
+
+    SwitchToUs() {
+        const usSource = Object.values(this._inputSourceManager.inputSources)
+            .find(source => source.type === 'xkb' && source.id === 'us');
+        usSource?.activate();
     }
 
     _scheduleSwitch() {

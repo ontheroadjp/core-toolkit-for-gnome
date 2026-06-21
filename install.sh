@@ -29,6 +29,12 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Control><Shift>space'
 
 # ----------------------------------
+# focus-us-input (GNOME extension)
+# ----------------------------------
+rm -rf ${HOME}/.local/share/gnome-shell/extensions/focus-us-input@local
+ln -sf ${CORE_TOOLKIT_FOR_GNOME_PATH}/scripts/focus-us-input ${HOME}/.local/share/gnome-shell/extensions/focus-us-input@local
+
+# ----------------------------------
 # tmux-switch-us-input
 # ----------------------------------
 ln -sf ${CORE_TOOLKIT_FOR_GNOME_PATH}/scripts/tmux-switch-us-input/switch-input-to-us ${HOME}/.local/bin/switch-input-to-us
@@ -38,7 +44,13 @@ ln -sf ${CORE_TOOLKIT_FOR_GNOME_PATH}/scripts/tmux-switch-us-input/switch-input-
 # ----------------------------------
 cat <<'EOF'
 
-=== Manual step: ~/.tmux.conf ===
+=== Manual step 1: reload focus-us-input extension ===
+Run the following to apply the D-Bus interface:
+
+  gnome-extensions disable focus-us-input@local
+  gnome-extensions enable focus-us-input@local
+
+=== Manual step 2: ~/.tmux.conf ===
 Add the following line to enable auto-switch to US input on pane focus:
 
   set-hook -g after-select-pane 'run-shell "switch-input-to-us"'
