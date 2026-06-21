@@ -45,6 +45,7 @@ style = "Regular"
 # ========================= WINDOW =========================
 [window]
 # decorations = "buttonless"
+# decorations = "Full"
 decorations = "None"
 #startup_mode = "SimpleFullscreen"
 startup_mode = "Windowed"
