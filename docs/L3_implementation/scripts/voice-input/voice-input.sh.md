@@ -47,3 +47,7 @@ voice-input.sh toggle
 
 - モデルを変える場合は `WHISPER_MODEL` の値を変更する（`ggml-small.bin` 等）
 - `--language auto` で日英自動判定。特定言語に固定したい場合は `--language ja` 等に変更
+
+## 変更履歴（git log より自動生成）
+
+- adb6559 feat(#6): add whisper.cpp-based voice input script for GNOME

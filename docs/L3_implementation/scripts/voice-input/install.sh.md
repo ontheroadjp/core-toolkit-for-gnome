@@ -39,3 +39,7 @@ metadata:
 
 - ビルドに `build-essential cmake libasound2-dev` が必要。未インストールの場合は `_check_deps` がエラーメッセージと apt コマンドを出力して終了する。
 - whisper.cpp のビルドは初回のみ 5〜10 分かかる。
+
+## 変更履歴（git log より自動生成）
+
+- adb6559 feat(#6): add whisper.cpp-based voice input script for GNOME
