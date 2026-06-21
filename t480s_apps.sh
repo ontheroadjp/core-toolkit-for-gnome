@@ -24,15 +24,17 @@ sudo apt update && sudo apt install -y \
 # hyperfile     benchmaker
 # rclone        google drive / dropbox
 # gocryptfs     encript dir
-# - gocryptfs ~/hoge.env ~/hoge   # mount
-# - fusermount -u ~/hoge          # unmount
+# - gocryptfs ~/hoge.env ~/hoge     # mount
+# - fusermount -u ~/hoge            # unmount
+# gpaste-2 gir1.2-gpaste-2          # clipboard history
 echo '----------------------------'
 echo 'Install system utilities ...'
 echo '----------------------------'
 sudo apt install -y \
     hyperfile \
     rclone \
-    gocryptfs
+    gocryptfs \
+    gpaste-2 gir1.2-gpaste-2
 
 # -----------------------------------------
 # htop:     Monitoring CPU and Memory Usage
@@ -41,7 +43,7 @@ sudo apt install -y \
 # whois:    Perform a DNS reverse lookup
 # arp-scan: List devices on the network
 echo '----------------------------'
-echo 'Install system monitor tools ...'
+echo ' Install system monitor tools ...'
 echo '----------------------------'
 sudo apt install -y \
     htop \
@@ -50,12 +52,13 @@ sudo apt install -y \
     whois \
     arp-scan
 
+
 # -----------------------------------------
 # yt-dlp        downloader
 # ffmpeg        encoder
 # mpv           music player
 echo '----------------------------'
-echo 'Install applications ...'
+echo ' Install applications ...'
 echo '----------------------------'
 sudo apt install -y \
     yt-dlp \
@@ -63,7 +66,12 @@ sudo apt install -y \
     mpv
 
 echo '----------------------------'
-echo 'Install keyd ...'
+echo ' Gnome Shell Extension'
+echo '----------------------------'
+sudo apt install gnome-shell-extension-manager
+
+echo '----------------------------'
+echo ' Install keyd ...'
 echo '----------------------------'
 # sudo keyd monitor
 if ! command -v keyd >/dev/null 2>&1; then
