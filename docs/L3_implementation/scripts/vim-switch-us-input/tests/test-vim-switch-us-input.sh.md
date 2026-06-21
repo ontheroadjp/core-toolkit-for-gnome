@@ -33,3 +33,7 @@ Vim plugin の `InsertLeave` autocmd が FEP switcher の D-Bus メソッドを
 - Vim、`timeout`、POSIX shell が必要。
 - GNOME Shell による実際の入力ソース切替は検証せず、D-Bus クライアントへ渡す
   引数までを検証する。
+
+## 変更履歴（git log より自動生成）
+
+- 7a815b6 feat(#20): switch input source after leaving Vim Insert mode

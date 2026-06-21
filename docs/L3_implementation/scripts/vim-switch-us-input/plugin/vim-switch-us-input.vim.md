@@ -40,3 +40,7 @@ Vim plugin。
   (`vim-switch-us-input.vim:16-19`)。
 - `dbus-send` と `fep-switcher@local` GNOME Shell extension が必要。
 - `InsertLeave` は Insert mode の終了後に発火するため、切替完了は非同期となる。
+
+## 変更履歴（git log より自動生成）
+
+- 7a815b6 feat(#20): switch input source after leaving Vim Insert mode
