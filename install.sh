@@ -52,16 +52,12 @@ ln -sf ${CORE_TOOLKIT_FOR_GNOME_PATH}/scripts/tmux-switch-us-input/switch-input-
 # ----------------------------------
 cat <<'EOF'
 
-=== Manual step 1: enable GNOME extensions ===
-Run the following to activate the new extensions (required after first install or logout/login):
-
-  gnome-extensions enable fep-switcher@local
-  gnome-extensions enable app-switch-us-input@local
-
-=== Manual step 2: ~/.tmux.conf ===
+=== Manual step: ~/.tmux.conf ===
 Add the following line to enable auto-switch to US input on pane focus:
 
   set-hook -g after-select-pane 'run-shell "switch-input-to-us"'
+
+NOTE: On Wayland, newly installed GNOME extensions take effect after logout/login.
 
 EOF
 
