@@ -6,12 +6,14 @@
 echo '----------------------------'
 echo 'Install dev tools ...'
 echo '----------------------------'
+# unzip: needed for ghq install below
+# gh removed here — installed via GitHub keyring below for latest version
 sudo apt update && sudo apt install -y \
     build-essential \
     curl \
+    unzip \
     tree \
     git \
-    gh \
     tmux \
     fzf \
     bat \
@@ -21,20 +23,22 @@ sudo apt update && sudo apt install -y \
 
 # -----------------------------------------
 # rofi          launcher    # deprected
-# hyperfile     benchmaker
+# hyperfine     benchmaker
 # rclone        google drive / dropbox
 # gocryptfs     encript dir
 # - gocryptfs ~/hoge.env ~/hoge     # mount
 # - fusermount -u ~/hoge            # unmount
-# gpaste-2 gir1.2-gpaste-2          # clipboard history
 echo '----------------------------'
 echo 'Install system utilities ...'
 echo '----------------------------'
 sudo apt install -y \
     hyperfine \
     rclone \
-    gocryptfs \
-    gpaste-2 gir1.2-gpaste-2
+    gocryptfs
+
+# gpaste-2: may not be available in all Ubuntu 24.04 setups
+# gpaste-2 gir1.2-gpaste-2          # clipboard history
+sudo apt install -y gpaste-2 gir1.2-gpaste-2 || echo "[WARN] gpaste-2 not available, skipping."
 
 # -----------------------------------------
 # htop:     Monitoring CPU and Memory Usage
@@ -54,14 +58,13 @@ sudo apt install -y \
 
 
 # -----------------------------------------
-# yt-dlp        downloader
 # ffmpeg        encoder
 # mpv           music player
+# yt-dlp removed here — installed via wget below for latest version
 echo '----------------------------'
 echo ' Install applications ...'
 echo '----------------------------'
 sudo apt install -y \
-    yt-dlp \
     ffmpeg \
     mpv
 
@@ -117,6 +120,7 @@ if ! command -v ghq >/dev/null 2>&1; then
     unzip ghq_linux_amd64.zip
     sudo mv ghq_linux_amd64/ghq /usr/local/bin
     rm -rf ghq_linux_amd64
+    rm -f ghq_linux_amd64.zip
 else
     echo "ghq is already installd."
 fi

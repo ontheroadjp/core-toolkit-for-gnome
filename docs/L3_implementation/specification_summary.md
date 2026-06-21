@@ -26,32 +26,33 @@ sysfs に書き込み）。設定一覧:
 コメントアウトされた未採用候補（`t480s.sh:19-21`, `34-36`）も
 ファイル内に残されている（ウィンドウ最大化・タイル化の別キーバインド案）。
 
-## 2. `t480s/t480s-apps-inssstall.sh` — パッケージ/ツール導入スクリプト
+## 2. `t480s/t480s-apps-install.sh` — パッケージ/ツール導入スクリプト
 
 ### apt 経由（存在チェックなし、無条件実行）
 
-- 開発基盤: `build-essential curl tree git gh tmux fzf bat vim-gtk3 jq yq`
-  (`t480s-apps-inssstall.sh:9-20`)
-- ランチャー/暗号化/クラウド: `hyperfine rclone gocryptfs`
-  (`t480s-apps-inssstall.sh:33-37`)
-- メディア: `yt-dlp ffmpeg mpv` (`t480s-apps-inssstall.sh:63-66`)
+- 開発基盤: `build-essential curl unzip tree git tmux fzf bat vim-gtk3 jq yq`
+  (`t480s-apps-install.sh:10-21`)
+- システムユーティリティ: `hyperfine rclone gocryptfs`
+  (`t480s-apps-install.sh:30-34`)
+  - `gpaste-2 gir1.2-gpaste-2` は `|| echo` で失敗を無視（`t480s-apps-install.sh:37`）
+- メディア: `ffmpeg mpv` (`t480s-apps-install.sh:56-59`)
 
 ### 条件付きインストール（`command -v` で存在確認）
 
 | ツール | 確認方法 | インストール手段 | 行 |
 |---|---|---|---|
-| `keyd` | `command -v keyd` | PPA (`ppa:keyd-team/ppa`) + apt、`systemctl enable --now keyd` | `t480s-apps-inssstall.sh:77-84` |
-| `mise` | `command -v mise` | `curl https://mise.run \| sh` | `t480s-apps-inssstall.sh:89-93` |
-| `gh` | `command -v gh` | apt キーリング登録 + apt install | `t480s-apps-inssstall.sh:99-108` |
-| `ghq` | `command -v ghq` | GitHub Releases から zip 取得 → `usr/local/bin` へ配置 | `t480s-apps-inssstall.sh:113-122` |
-| `claude` | `command -v claude` | `curl -fsSL https://claude.ai/install.sh \| bash` | `t480s-apps-inssstall.sh:127-131` |
-| `codex` | `command -v codex` | `"${MISE_BIN}" exec node@24 -- npm install -g @openai/codex` | `t480s-apps-inssstall.sh:136-140` |
-| `google-chrome` | `command -v google-chrome` | `.deb` を `wget` → `apt install ./*.deb` | `t480s-apps-inssstall.sh:145-153` |
-| `yt-dlp` | `command -v yt-dlp` | 存在しなければ単体バイナリを `wget`、存在すれば `yt-dlp -U` で自己更新 | `t480s-apps-inssstall.sh:158-165` |
-| `espanso` | `command -v espanso` | GitHub Releases から Wayland 向け deb → `apt install` | `t480s-apps-inssstall.sh:168-178` |
+| `keyd` | `command -v keyd` | PPA (`ppa:keyd-team/ppa`) + apt、`systemctl enable --now keyd` | `t480s-apps-install.sh:69-76` |
+| `mise` | `command -v mise` | `curl https://mise.run \| sh` | `t480s-apps-install.sh:80-85` |
+| `gh` | `command -v gh` | apt キーリング登録 + apt install | `t480s-apps-install.sh:89-100` |
+| `ghq` | `command -v ghq` | GitHub Releases から zip 取得 → `/usr/local/bin` へ配置 | `t480s-apps-install.sh:103-114` |
+| `claude` | `command -v claude` | `curl -fsSL https://claude.ai/install.sh \| bash` | `t480s-apps-install.sh:117-121` |
+| `codex` | `command -v codex` | `"${MISE_BIN}" exec node@24 -- npm install -g @openai/codex` | `t480s-apps-install.sh:124-128` |
+| `google-chrome` | `command -v google-chrome` | `.deb` を `wget` → `apt install ./*.deb` | `t480s-apps-install.sh:131-135` |
+| `yt-dlp` | `command -v yt-dlp` | 存在しなければ `/usr/local/bin` へバイナリ wget、存在すれば `yt-dlp -U` で自己更新 | `t480s-apps-install.sh:139-147` |
+| `espanso` | `command -v espanso` | GitHub Releases から Wayland 向け deb → `apt install` | `t480s-apps-install.sh:150-158` |
 
 `mise` 導入後、`mise use -g node@24` で Node.js 24 をグローバル設定
-（`t480s-apps-inssstall.sh:94`）。
+（`t480s-apps-install.sh:86`）。
 
 ## 3. `.config/alacritty/alacritty.toml` — Alacritty 設定
 
