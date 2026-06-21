@@ -61,6 +61,10 @@ music
 # voice input のインストール（sudo不要、初回のみ 5〜10 分かかる）
 scripts/voice-input/install.sh
 # 以後 Ctrl+Shift+= で録音開始/停止、Ctrl+V で貼り付け
+
+# tmux-switch-us-input のインストール（シンボリックリンク作成 + ~/.tmux.conf 追記指示を表示）
+./install.sh
+# 指示に従い ~/.tmux.conf に set-hook 行を追記して `prefix + r` でリロード
 ```
 
 Alacritty の配色テーマを切り替えるには、
