@@ -1,4 +1,4 @@
-backend: Clipboard
+backend: Inject
 
 # Force xkb us layout to prevent crash when mozc-jp is the active input source.
 # EVDEVSource uses xkbcommon to compile the keymap; mozc-jp has no xkb symbol file.
