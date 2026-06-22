@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if espanso status 2>/dev/null | grep -q "is running"; then
+  espanso stop
+  notify-send "Espanso" "stopped"
+else
+  espanso start
+  notify-send "Espanso" "started"
+fi
