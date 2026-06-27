@@ -65,6 +65,7 @@ ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.l
 # ----------------------------------
 # Manual steps
 # ----------------------------------
+printf '\033[0;36m'
 cat <<'EOF'
 
 === Manual step: ~/.tmux.conf ===
@@ -75,5 +76,6 @@ Add the following line to enable auto-switch to US input on pane focus:
 NOTE: On Wayland, newly installed GNOME extensions take effect after logout/login.
 
 EOF
+printf '\033[0m'
 
 exit 0
