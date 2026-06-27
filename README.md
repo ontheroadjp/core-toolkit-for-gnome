@@ -110,7 +110,7 @@ Alacritty の配色テーマを切り替えるには、
   永続化したい場合は `tlp` の利用が必要（`t480s-settings.sh` 末尾のコメント参照）。
 - バッテリー低下通知（`scripts/battery-alert/`）のしきい値・ポーリング間隔は
   `.env` で設定する（詳細は `scripts/battery-alert/README.md` 参照）。
-- mpv music launcher（`scripts/mpv-player/`）は playlist を
+- mpv music launcher（`applications/mpv-player/`）は playlist を
   `~/Music/playlist/mpv-player.m3u` に毎回上書きする。
 
 ## Testing
