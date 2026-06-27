@@ -113,6 +113,22 @@ Alacritty の配色テーマを切り替えるには、
 - mpv music launcher（`scripts/mpv-player/`）は playlist を
   `~/Music/playlist/mpv-player.m3u` に毎回上書きする。
 
+## Testing
+
+```bash
+# install.sh の構文・参照ファイル・呼び出し構成を検証
+bash tests/test_install.sh
+
+# 全 install.sh を shellcheck（未インストールの場合は bash -n）で検証
+bash tests/lint_shell.sh
+
+# 各モジュールのユニット／インテグレーションテスト
+python3 -m pytest scripts/battery-alert/tests/test_battery_alert.py
+python3 -m pytest applications/mpv-player/tests/test_mpv_player.py
+bash scripts/voice-input/tests/test_voice_input.sh
+bash scripts/vim-switch-us-input/tests/test-vim-switch-us-input.sh
+```
+
 ## Design Principles
 
 - 単一マシン・単一ユーザーの個人用ツールであり、汎用化・抽象化は行わない。
