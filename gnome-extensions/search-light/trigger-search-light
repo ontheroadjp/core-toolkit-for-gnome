@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+gdbus call --session \
+  --dest org.gnome.Shell.Extensions.FepSwitcher \
+  --object-path /org/gnome/Shell/Extensions/FepSwitcher \
+  --method org.gnome.Shell.Extensions.FepSwitcher.SwitchToUs >/dev/null
+
+sleep 0.05
+
+gdbus call --session \
+  --dest org.gnome.Shell \
+  --object-path /org/gnome/Shell \
+  --method org.gnome.Shell.Eval \
+  "import('resource:///org/gnome/shell/ui/main.js').then(Main => Main.overview.searchLight._toggle_search_light())" >/dev/null

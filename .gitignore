@@ -3,3 +3,4 @@
 __pycache__/
 
 applications/espanso/match/private.yml
+root/home/user/.config/espanso/match/private.yml
