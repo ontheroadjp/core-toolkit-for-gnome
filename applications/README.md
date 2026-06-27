@@ -7,7 +7,7 @@
 
 | ディレクトリ | 概要 |
 |---|---|
-| [`alacritty/`](alacritty/README.md) | Alacritty ターミナルエミュレータの設定ファイルと GNOME デスクトップエントリ |
+| [`alacritty/`](alacritty/README.md) | Alacritty ターミナルエミュレータの設定ファイル |
 | [`chrome/`](chrome/README.md) | Chrome DevTools Protocol (CDP) を有効化した Chrome 専用プロファイル起動ラッパー |
 | [`espanso/`](espanso/README.md) | espanso のトグルスクリプトと GNOME キーバインド登録 |
 | [`keyd/`](keyd/README.md) | keyd キーボードリマップ設定（CapsLock → Ctrl 等） |

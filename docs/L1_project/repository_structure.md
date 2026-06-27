@@ -12,7 +12,6 @@
 ├── applications/
 │   ├── alacritty/                        # Alacritty 設定 + install.sh
 │   │   ├── alacritty.toml               # Alacritty 本体設定（→ ~/.config/alacritty/）
-│   │   ├── Alacritty.desktop            # デスクトップエントリ（→ ~/.local/share/applications/）
 │   │   ├── theme/
 │   │   │   ├── tokyo-night.toml         # 配色テーマ（現在アクティブ）
 │   │   │   ├── tokyo-night-storm.toml   # 配色テーマ（代替）
@@ -112,8 +111,7 @@ ThinkPad 固有の sysfs 属性（`/sys/class/power_supply/BAT0/charge_start_thr
 実行コードではない（コメントアウト済み）。
 
 ### `applications/alacritty/`
-`install.sh` が `~/.config/alacritty` → このディレクトリへのシンボリックリンクを作成し、
-`Alacritty.desktop` を `~/.local/share/applications/` に配置する。
+`install.sh` が `~/.config/alacritty` → このディレクトリへのシンボリックリンクを作成する。
 Alacritty のメイン設定 (`alacritty.toml`) と、3つの配色テーマファイル(`theme/*.toml`)を持つ。
 `alacritty.toml` にはコメントで「T480s」と「MBP15」の2機種分のフォント設定が記載されており、
 現在 T480s 用設定のみがアクティブ（MBP15 用はコメントアウト済み）。

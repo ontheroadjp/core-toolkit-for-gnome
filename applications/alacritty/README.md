@@ -1,6 +1,6 @@
 # alacritty
 
-Alacritty ターミナルエミュレータの設定ファイルと GNOME デスクトップエントリを管理するディレクトリ。
+Alacritty ターミナルエミュレータの設定ファイルを管理するディレクトリ。
 `install.sh` が設定ディレクトリをシンボリックリンクとして `~/.config/alacritty` に配置する。
 
 ## ファイル構成
@@ -9,8 +9,7 @@ Alacritty ターミナルエミュレータの設定ファイルと GNOME デス
 |---|---|
 | `alacritty.toml` | Alacritty 本体設定（フォント・テーマ・キーバインド） |
 | `theme/` | カラーテーマ TOML ファイル群（tokyo-night 等） |
-| `Alacritty.desktop` | GNOME アプリケーションメニュー用デスクトップエントリ |
-| `install.sh` | `~/.config/alacritty` と `~/.local/share/applications/Alacritty.desktop` にシンボリックリンクを作成 |
+| `install.sh` | `~/.config/alacritty` にシンボリックリンクを作成 |
 
 ## インストール
 

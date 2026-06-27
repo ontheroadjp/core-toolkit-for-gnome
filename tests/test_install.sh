@@ -66,7 +66,6 @@ check_file "google-chrome-cdp exists"     "${REPO_DIR}/applications/chrome/googl
 check_file "google-chrome-cdp.desktop"   "${REPO_DIR}/applications/chrome/google-chrome-cdp.desktop"
 check_file "keyd/default.conf exists"    "${REPO_DIR}/applications/keyd/default.conf"
 check_file "alacritty.toml exists"       "${REPO_DIR}/applications/alacritty/alacritty.toml"
-check_file "Alacritty.desktop exists"    "${REPO_DIR}/applications/alacritty/Alacritty.desktop"
 check_file "yt-dlp config exists"        "${REPO_DIR}/applications/yt-dlp/config"
 check_file "fep-switcher extension.js"   "${REPO_DIR}/scripts/fep-switcher/extension.js"
 check_file "app-switch extension.js"     "${REPO_DIR}/scripts/app-switch-us-input/extension.js"
