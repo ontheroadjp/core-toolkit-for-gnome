@@ -23,9 +23,9 @@
       "note": "ThinkPad-specific: writes battery charge thresholds via /sys/class/power_supply/BAT0/ (requires thinkpad_acpi kernel module and sudo). Will fail on non-ThinkPad hardware."
     },
     "install_all": {
-      "run": "./install.sh",
-      "evidence": "install.sh:1 (#!/bin/bash), file mode 755",
-      "note": "Orchestrates all per-app install.sh: calls scripts/core-tools/install.sh, then applications/*/install.sh, then wires GNOME extensions and symlinks for fep-switcher, app-switch-us-input, tmux-switch-us-input."
+      "run": "./install-all.sh",
+      "evidence": "install-all.sh:1 (#!/bin/bash), file mode 755",
+      "note": "Orchestrates all per-app install.sh: calls scripts/core-tools/install.sh, then applications/*/install.sh, then wires GNOME extensions and symlinks for fep-switcher, app-switch-us-input, tmux-switch-us-input. Prints manual steps for core-gnome-settings and core-t480s-settings."
     },
     "install_packages_and_tools": {
       "run": "./scripts/core-tools/install.sh",

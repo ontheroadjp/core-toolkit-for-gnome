@@ -18,7 +18,7 @@ INSTALL_SCRIPTS=(
     "applications/yt-dlp/install.sh"
     "applications/espanso/install.sh"
     "applications/chrome/install.sh"
-    "install.sh"
+    "install-all.sh"
 )
 
 # -----------------------------------------
@@ -74,7 +74,7 @@ check_file "switch-input-to-us exists"   "${REPO_DIR}/scripts/tmux-switch-us-inp
 
 # -----------------------------------------
 echo ""
-echo "--- Test 3: install.sh calls all per-app scripts ---"
+echo "--- Test 3: install-all.sh calls all per-app scripts ---"
 
 EXPECTED_CALLS=(
     "scripts/core-tools/install.sh"
@@ -86,12 +86,12 @@ EXPECTED_CALLS=(
     "applications/chrome/install.sh"
 )
 
-ROOT_INSTALL="${REPO_DIR}/install.sh"
+ROOT_INSTALL="${REPO_DIR}/install-all.sh"
 for expected in "${EXPECTED_CALLS[@]}"; do
     if grep -qF "${expected}" "$ROOT_INSTALL"; then
-        pass "install.sh calls: ${expected}"
+        pass "install-all.sh calls: ${expected}"
     else
-        fail "install.sh missing call: ${expected}"
+        fail "install-all.sh missing call: ${expected}"
     fi
 done
 

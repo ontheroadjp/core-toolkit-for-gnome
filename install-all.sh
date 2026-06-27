@@ -68,6 +68,16 @@ ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.l
 printf '\033[0;36m'
 cat <<'EOF'
 
+=== Manual step: scripts/core-gnome-settings ===
+Run the following to apply GNOME settings (machine-agnostic, no sudo required):
+
+  scripts/core-gnome-settings/apply-settings.sh
+
+=== Manual step: scripts/core-t480s-settings ===
+Run the following to apply T480s-specific settings (requires sudo internally):
+
+  scripts/core-t480s-settings/apply-settings.sh
+
 === Manual step: ~/.tmux.conf ===
 Add the following line to enable auto-switch to US input on pane focus:
 

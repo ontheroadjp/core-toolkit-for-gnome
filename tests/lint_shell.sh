@@ -31,7 +31,7 @@ while IFS= read -r -d '' script; do
             fail "bash -n: ${rel}"
         fi
     fi
-done < <(find "${REPO_DIR}" -name "install.sh" -print0 | sort -z)
+done < <(find "${REPO_DIR}" \( -name "install.sh" -o -name "install-all.sh" \) -print0 | sort -z)
 
 echo ""
 echo "=============================="
