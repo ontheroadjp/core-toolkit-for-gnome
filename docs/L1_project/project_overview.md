@@ -2,9 +2,10 @@
 
 ## 目的
 
-Lenovo ThinkPad T480s 上の GNOME (Ubuntu) 環境を再現可能にするための
-個人用シェルスクリプト・設定ファイル集。詳細な背景は
-[L0_concept/concept.md](../L0_concept/concept.md) を参照。
+Ubuntu 24.04 LTS / GNOME 環境を再現可能にするための
+個人用シェルスクリプト・設定ファイル集。ハードウェア固有の設定（バッテリー充電閾値等）は
+`scripts/core-t480s-settings/` に分離されており、それ以外のモジュールは機種を問わず利用できる。
+詳細な背景は [L0_concept/concept.md](../L0_concept/concept.md) を参照。
 
 ## 技術スタック（確認済み）
 
@@ -46,11 +47,11 @@ OSディストリビューションは Ubuntu 24.04 LTS (Noble Numbat)。
    - `gh` (GitHub CLI) / `ghq` の条件付きインストール（`core-tools/install.sh:64-89`）
    - Claude Code / OpenAI Codex CLI の条件付きインストール（`core-tools/install.sh:94-110`）
 
-3. **dotfiles・アプリ設定の一括インストール** — `install.sh`（ルート）
+3. **dotfiles・アプリ設定の一括インストール** — `install-all.sh`（ルート）
    - `scripts/core-tools/install.sh` を呼び出し後、各 `applications/*/install.sh` を順に実行
    - GNOME 拡張（fep-switcher, app-switch-us-input）のシンボリックリンクと有効化
    - `scripts/tmux-switch-us-input/switch-input-to-us` を `~/.local/bin/` にリンク
-   - （`install.sh` 全体を確認済み）
+   - （`install-all.sh` 全体を確認済み）
 
 4. **Alacritty 端末設定** — `applications/alacritty/`
    - フォント・ウィンドウ装飾・配色・キーバインドの設定
