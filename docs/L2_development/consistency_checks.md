@@ -35,8 +35,8 @@ bash tests/test_install.sh
 
 以下の5点を検証する:
 - 各 `install.sh` の構文チェック（shellcheck/bash -n）
-- `install.sh` が参照するファイル（mpv-player.py, espanso-toggle, keyd/default.conf 等）の実在確認
-- ルートの `install.sh` が全 per-app スクリプトを呼び出していること
+- `install-all.sh` が参照するファイル（mpv-player.py, espanso-toggle, keyd/default.conf 等）の実在確認
+- ルートの `install-all.sh` が全 per-app スクリプトを呼び出していること
 - ツールカバレッジ（build-essential, tmux, fzf, mise, ghq, claude 等が新スクリプト群でカバーされていること）
 - `t480s/t480s-apps-install.sh` が削除済みであること（リファクタリング完了確認）
 

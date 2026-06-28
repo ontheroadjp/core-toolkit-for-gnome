@@ -9,8 +9,8 @@
   Python は `scripts/battery-alert/battery_alert.py`、`applications/mpv-player/mpv-player.py`
   のみで使用し、標準ライブラリのみに依存する（外部 pip パッケージなし）。
 - マシン設定は GNOME 標準の `gsettings` コマンドで行い、独自の設定DBや
-  ラッパーツールは作らない。根拠: `t480s/t480s-settings.sh` の全 `gsettings` 行
-  （`t480s-settings.sh:6,14-16,21,27-30,35-38,43,50-51`）。
+  ラッパーツールは作らない。根拠: `scripts/core-gnome-settings/apply-settings.sh` の全 `gsettings` 行
+  （`apply-settings.sh:6,14-16,21,27-30,35-38,43,50-51`）。
 - パッケージ導入は OS 標準の `apt` を第一手段とし、`apt` に存在しないものは
   各ツール公式のインストール手順（`curl | sh`, `wget` + `dpkg`,
   `npm install -g` 等）を個別に踏む。根拠: `scripts/core-tools/install.sh:9-20`（apt）、
@@ -23,15 +23,16 @@
 - アプリのパッケージインストールと設定ファイルの配置を分離する。
   汎用ツールのインストールは `scripts/core-tools/install.sh`、
   アプリ固有のインストールは各 `applications/*/install.sh` が担う。
-  根拠: `install.sh`（ルート）の構成から実装を確認。
+  根拠: `install-all.sh`（ルート）の構成から実装を確認。
 
 ## セキュリティ方針
 
 - 公開リポジトリを想定する場合、認証情報・トークン・個人を特定できる
   情報をスクリプトや設定ファイルに直接書かないこと。
   現時点のスクリプト・設定ファイルを確認した範囲では、
-  認証情報のハードコードは検出されなかった（`t480s/t480s-settings.sh`、
-  `scripts/core-tools/install.sh`、`applications/alacritty/alacritty.toml`、
+  認証情報のハードコードは検出されなかった（`scripts/core-gnome-settings/apply-settings.sh`、
+  `scripts/core-t480s-settings/apply-settings.sh`、`scripts/core-tools/install.sh`、
+  `applications/alacritty/alacritty.toml`、
   `gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` を確認済み）。
 - `curl | sh` / `wget | sudo tee` 形式のリモートスクリプト実行
   （`scripts/core-tools/install.sh:56,67-71,96`）は、実行前にURLの出典を
@@ -43,7 +44,7 @@
 
 ## パフォーマンス要件
 
-特になし。個人利用のセットアップスクリプトであり、実行頻度は
+特になし。セットアップスクリプトであり、実行頻度は
 低い（マシン初期化時、または設定変更時のみ）。
 
 ## 禁止事項
