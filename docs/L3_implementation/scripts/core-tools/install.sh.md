@@ -44,3 +44,8 @@
 - Docker 公式 apt repository の GPG key を `curl -fsSL https://download.docker.com/linux/ubuntu/gpg` で取得する（`install.sh:56`）
 - `docker` group は root 相当の権限を持つため、スクリプトは警告を表示する（`install.sh:77`）
 - `/tmp` に `cd` してから wget するステップ（[8]）があるため、スクリプト内で `cd /tmp || exit` を使用している
+
+## 変更履歴（git log より自動生成）
+
+- cc53830 feat(#38): add docker to core tools installer
+- 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
