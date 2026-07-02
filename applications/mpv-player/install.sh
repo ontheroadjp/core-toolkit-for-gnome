@@ -9,10 +9,12 @@ sudo apt install -y ffmpeg mpv
 
 mkdir -p "${BIN_DIR}" "${CONFIG_DIR}"
 
-chmod +x "${SCRIPT_DIR}/mpv-player.py"
-ln -sf "${SCRIPT_DIR}/mpv-player.py" "${BIN_DIR}/mpv-player"
+chmod +x "${SCRIPT_DIR}/mpv-music-player.py"
+chmod +x "${SCRIPT_DIR}/mpv-video-player.sh"
+ln -sfn "${SCRIPT_DIR}/mpv-music-player.py" "${BIN_DIR}/mpv-music-player"
+ln -sfn "${SCRIPT_DIR}/mpv-video-player.sh" "${BIN_DIR}/mpv-video-player"
 
-ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/mpv"
+ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/mpv"
 
 echo "Done: mpv-player installed"
 exit 0
