@@ -84,6 +84,7 @@ docs/tests が更新されないまま不整合な状態だった。本変更で
 
 ## 変更履歴（git log より自動生成）
 
-- e59fb39 fix(mpv-player): split mpv wrapper into music and video players
+- 13e5a42 feat(#42): add -d/--delete option to mpv-player.py
 - 778b08c refactor(#40): merge mpv-video-player.sh into mpv-player.py with music/video mode
+- e59fb39 fix(mpv-player): split mpv wrapper into music and video players
 - 32bfb58 refactor(mpv-player): move from scripts/ to applications/
