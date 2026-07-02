@@ -61,7 +61,7 @@ readlink -f ~/.config/yt-dlp
 readlink -f ~/.config/espanso
 readlink -f ~/.local/bin/gnome-overview-toggle
 readlink -f ~/.local/bin/switch-input-to-us
-readlink -f ~/.local/bin/music
+readlink -f ~/.local/bin/mpv-player
 ```
 
 期待される出力はそれぞれ `<このリポジトリの絶対パス>/applications/alacritty` 等。

@@ -29,7 +29,7 @@
 │   ├── keyd/                             # keyd キーリマッパー設定 + install.sh
 │   │   ├── default.conf                 # keyd 設定（→ /etc/keyd/）
 │   │   └── install.sh
-│   ├── mpv-player/                       # mpv music launcher（Python）+ 設定 + install.sh
+│   ├── mpv-player/                       # mpv music/video launcher（Python）+ 設定 + install.sh
 │   │   ├── mpv-player.py
 │   │   ├── mpv.conf                     # mpv 設定（→ ~/.config/mpv/）
 │   │   ├── input.conf                   # mpv キーバインド設定
@@ -127,9 +127,10 @@ espanso が読む `config/default.yml`（`backend: Inject`）と `match/` 配下
 `match/private.yml` はメールアドレス等を含むため gitignore 対象（`match/private.yml.example` からコピーして作成）。
 
 ### `applications/mpv-player/`
-`install.sh` が `mpv-player.py` を `~/.local/bin/music` にリンクし（コマンド名は `music`）、
-`~/.config/mpv` → このディレクトリへのシンボリックリンクを作成する。
-`tests/test_mpv_player.py` に `unittest` ベースのテストがある（9件）。
+`install.sh` が `mpv-player.py` を `~/.local/bin/mpv-player` にリンクし（コマンド名は
+`mpv-player`、`music`/`video` を引数に取る）、`~/.config/mpv` → このディレクトリへの
+シンボリックリンクを作成する。
+`tests/test_mpv_player.py` に `unittest` ベースのテストがある（21件）。
 
 ### `applications/yt-dlp/`
 `install.sh` が `~/.config/yt-dlp` → このディレクトリへのシンボリックリンクを作成する。
