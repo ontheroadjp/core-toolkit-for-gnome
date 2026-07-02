@@ -106,20 +106,23 @@ systemctl --user enable --now battery-alert.timer
   `POLL_INTERVAL` が systemd timer に反映されない
   （`scripts/battery-alert/README.md` 参照）。
 
-## 6. mpv music launcher のインストールと実行
+## 6. mpv music/video launcher のインストールと実行
 
 ```bash
 ./applications/mpv-player/install.sh
-music
+cd ~/Music && mpv-player music
+# または
+cd ~/Videos && mpv-player video
 ```
 
 - `install.sh` は `applications/mpv-player/mpv-player.py` を
-  `~/.local/bin/music` へシンボリックリンクする。`sudo` は不要。
-- `music` は起動時に main menu を表示し、`~/Music` 配下の音声/動画ファイル
+  `~/.local/bin/mpv-player` へシンボリックリンクする。`sudo` は不要。
+- `mpv-player music`/`mpv-player video` は起動時に main menu を表示し、
+  実行時のカレントディレクトリ配下の音声/動画ファイル（モードごとの拡張子のみ）
   から playlist を作成する。メニュー 2 では fzf で絞り込まれた候補全件を
   playlist に入れる。
-- playlist は `~/Music/playlist/mpv-player.m3u` に上書き保存される。
-- 再生は `mpv --no-video` で実行される。
+- playlist は `<cwd>/playlist/mpv-player.m3u` に上書き保存される。
+- 再生は `music` モードのみ `mpv --no-video` を付与する（`video` は映像を表示）。
 
 ## 7. voice input のインストールと実行
 

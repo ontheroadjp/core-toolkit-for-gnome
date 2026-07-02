@@ -40,3 +40,11 @@
 
 - `sudo apt install` を無条件実行するため、AI が自律的に実行することは想定しない
   （`CLAUDE.md` 参照）
+
+## 変更履歴（git log より自動生成）
+
+- 778b08c refactor(#40): merge mpv-video-player.sh into mpv-player.py with music/video mode
+- e59fb39 fix(mpv-player): split mpv wrapper into music and video players
+- 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
+- 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
+- 32bfb58 refactor(mpv-player): move from scripts/ to applications/

@@ -62,3 +62,9 @@ docs/tests が更新されないまま不整合な状態だった。本変更で
 - 対象ディレクトリはカレントディレクトリ固定のため、`~/Music` 等を対象にしたい場合は
   そのディレクトリに `cd` してから実行する必要がある
 - playlist ファイルは常に `<cwd>/playlist/mpv-player.m3u` に上書きされる
+
+## 変更履歴（git log より自動生成）
+
+- 778b08c refactor(#40): merge mpv-video-player.sh into mpv-player.py with music/video mode
+- e59fb39 fix(mpv-player): split mpv wrapper into music and video players
+- 32bfb58 refactor(mpv-player): move from scripts/ to applications/

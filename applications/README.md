@@ -11,7 +11,7 @@
 | [`chrome/`](chrome/README.md) | Chrome DevTools Protocol (CDP) を有効化した Chrome 専用プロファイル起動ラッパー |
 | [`espanso/`](espanso/README.md) | espanso のトグルスクリプトと GNOME キーバインド登録 |
 | [`keyd/`](keyd/README.md) | keyd キーボードリマップ設定（CapsLock → Ctrl 等） |
-| [`mpv-player/`](mpv-player/README.md) | `~/Music` の音楽ファイルを fzf で選んで mpv 再生する Python スクリプト |
+| [`mpv-player/`](mpv-player/README.md) | カレントディレクトリの音楽/動画ファイルを fzf で選んで mpv 再生する Python スクリプト（`music`/`video` モード対応） |
 | [`youtube/`](youtube/README.md) | CDP 経由で既存の YouTube タブを再利用して開く CLI ランチャー |
 | [`yt-dlp/`](yt-dlp/README.md) | yt-dlp の設定ファイル（メタデータ埋め込み・mp4 出力等） |
 | [`icons/`](icons/) | 各アプリケーションで使用するアイコン素材 |
