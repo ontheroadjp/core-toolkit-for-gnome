@@ -1,6 +1,6 @@
 ---
 name: keyd-default-conf
-description: keyd system-wide keymap, including the Mozc "kj"-to-Escape combo and the Ctrl+Space-to-Scroll_Lock fep-toggle remap
+description: keyd system-wide keymap, including the Mozc "kj"-to-Escape combo, the Ctrl+Space-to-Scroll_Lock fep-toggle remap, and the Ctrl+Shift+Space passthrough exemption
 metadata:
   type: project
 ---
@@ -11,6 +11,9 @@ keyd のシステム全体キーマップ定義。ホームポジション改善
 ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリング用ファンクション
 キー割り当てに加え、Mozc 入力中の Vim 風エスケープコンボ（`kj`）と、Ctrl+Space
 を Scroll_Lock に変換する fep-toggle 用 remap を提供する（`default.conf:1-29`）。
+Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタムショートカット
+`<Control><Shift>space`（Nuts Launcher）に生の Ctrl+Shift+Space を届けるための
+明示的な例外バインドも定義する（`default.conf:30-38`、#56）。
 
 ## 動作概要
 
@@ -26,10 +29,14 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
   `keyd bind 'main.k = oneshotk(after_k, k)'` を発行した時にだけ有効になる
   （動的バインド、`applications/keyd/fep-toggle.sh.md` 参照）。Mozc → US へ
   戻ると同じ経路で `main.k = k` に戻され、`after_k` は無効化される。
-- `[control]` レイヤーで `space = scrolllock` を定義する（`default.conf:20-29`）。
+- `[control]` レイヤーで `space = scrolllock` を定義する（`default.conf:20-28`）。
   CapsLock（`leftcontrol` として動作）または右 Ctrl を押しながら Space を押すと、
   評価は keyd（evdev レイヤー、X11/Wayland/ibus より手前）で完結し、OS には
   Ctrl+Space ではなく Scroll_Lock が渡る。
+- `[control+shift]` composite レイヤーで `space = C-S-space` を定義する
+  （`default.conf:30-38`）。Control と Shift が同時に held の間はこのレイヤーが
+  `[control]` より優先され、Ctrl+Shift+Space を押しても Scroll_Lock 変換されず、
+  Control・Shift を明示的に再付与した Space（＝素の Ctrl+Shift+Space）が OS に渡る。
 
 ## 重要な設計判断
 
@@ -56,6 +63,18 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
   OSD 表示）が確認されなかったため採用した。
 - GNOME 側のバインド先は `scripts/core-gnome-settings/apply-settings.sh` の
   `_register_fep_toggle_keybinding`（`Scroll_Lock`）と対で維持する必要がある。
+- `[control+shift]`（composite レイヤー）を空のまま定義するだけでは不十分だった
+  （実機検証で確認済み、#56）。`man keyd` の COMPOSITE LAYERS の記述どおり、
+  composite レイヤーは自身が明示的にバインドしたキーのみ優先し、未バインドの
+  キーは通常のレイヤースタックを辿って解決されるため、`space` は依然として
+  `[control]` の `space = scrolllock` にフォールスルーしてしまう。そのため
+  `[control+shift]` 内で `space` を明示的にバインドする必要がある。ただし
+  composite レイヤーの明示バインドは合成元のモディファイア（この場合
+  Control・Shift）を出力から取り除く仕様（`man keyd` の `control+alt+h` →
+  素の `left` になる例と同じ）であるため、`space = space` だけでは無変換の
+  Space（モディファイアなし）になってしまう。`C-S-space` という macro shorthand
+  で Control・Shift を明示的に再付与し、GNOME が期待する生の Ctrl+Shift+Space
+  を再現している。
 
 ## 統合ポイント
 
@@ -67,6 +86,11 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
 - `[control] space = scrolllock` の変換先は
   `scripts/core-gnome-settings/apply-settings.sh` が登録する GNOME カスタム
   キーバインディング（`Scroll_Lock` → `/usr/local/bin/fep-toggle`）と対応する。
+- `[control+shift] space = C-S-space` は、本リポジトリ外の別リポジトリ
+  `nuts-launcher`（`~/.local/bin/trigger-nuts-launcher` にシンボリックリンク）
+  を起動する GNOME カスタムキーバインディング（`<Control><Shift>space`）と対応
+  する。このキーバインディング自体はユーザーが GNOME 側で手動登録したもので、
+  本リポジトリのどのスクリプトも登録処理を持たない（#56）。
 
 ## 注意事項・既知の制限
 
@@ -82,6 +106,7 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
 
 ## 変更履歴（git log より自動生成）
 
-- a9682b1 fix(#49): remap Ctrl+Space to Scroll_Lock so fep-toggle survives Mozc composition
+- 24c0e5b fix(#56): exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap
+- 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
