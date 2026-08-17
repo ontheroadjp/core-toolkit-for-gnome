@@ -40,3 +40,32 @@ Mozc 入力中のみ、`k` の直後に `j` を押すと未確定文字を破棄
 > キーバインドと `fep-toggle` 用の sudoers 設定は
 > `scripts/core-gnome-settings/apply-settings.sh` が別途行う。
 > `default.conf` を変更した場合は `sudo keyd reload` で反映する。
+
+## 既知の問題（issue #51）
+
+Mozc に未確定の変換がある状態で Ctrl+Space（CapsLock+Space）を押して FEP を
+切り替えると、以降のキー入力が Ctrl を押していないのに Ctrl+`<key>` として認識される
+「Ctrl が押しっぱなし」状態になることがある。`sudo keyd monitor -t` では evdev レベルの
+イベントは常に正しく対になっており、keyd 自体（evdev レベル）は原因ではないと確認済み。
+未確定の変換がある状態で FEP を切り替えると、その未確定文字列は破棄されず確定・挿入
+されたうえで切替が行われる。
+
+**暫定回避策**: もう一度 FEP を切り替える（Ctrl+Space をもう一度押す）と解消する。
+
+**試して効果がなかった対応（issue #58）**:
+- `Scroll_Lock` の代わりに `Pause` へ変換する: `Scroll_Lock+Any` が `LockMods`
+  という特殊なロック系アクションとして解釈される（`/usr/share/X11/xkb/compat/misc`）
+  ことが原因ではという仮説のもと検証したが、このルールを持たない通常のキーである
+  `Pause` に変えても症状は解消しなかった。
+- FEP 切替の前に `Escape` を1回送り、Mozc の未確定文字列を先にキャンセルしてから
+  切り替える: 未確定入力の有無に関係なく、通常のタイピング中でも数秒おきに
+  勝手に FEP が切り替わる別の重大な回帰を引き起こしたため撤回した。原因は
+  特定できていない。
+- FEP 切替そのものを3回連続で実行する（D-Bus 経由・keyd macro 経由いずれも）:
+  最終的な入力ソースは正しく戻るが、症状は解消しなかった。D-Bus 経由（`fep-toggle.sh`
+  から `gdbus call` で `fep-switcher@local` を直接複数回呼ぶ）の場合、実際の
+  キーイベントを一切発生させないため、原理的にコンポジタ側のモディファイア状態を
+  変え得ないと考えられる。
+
+原因調査・過去の対応状況は issue #51 とその native sub-issue（#52〜#54）、
+および #58 を参照。
