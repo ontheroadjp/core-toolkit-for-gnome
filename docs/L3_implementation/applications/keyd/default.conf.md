@@ -97,7 +97,7 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 - 実行時に上書きされる項目: `[main] k` バインドは
   `applications/keyd/fep-toggle.sh --keyd-us|--keyd-mozc` の `keyd bind`
   呼び出しにより動的に変わる。
-- `[control] space = scrolllock` の変換先は
+- `[control] space = macro(scrolllock 80ms leftcontrol)` の `scrolllock` 部分は
   `scripts/core-gnome-settings/apply-settings.sh` が登録する GNOME カスタム
   キーバインディング（`Scroll_Lock` → `/usr/local/bin/fep-toggle`）と対応する。
 - `[control+shift] space = C-S-space` は、本リポジトリ外の別リポジトリ
@@ -120,7 +120,8 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 変更履歴（git log より自動生成）
 
-- 24c0e5b fix(#56): exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap
+- 1261b23 fix(#60): send a single Ctrl tap after Scroll_Lock to clear stuck-Ctrl on FEP toggle
+- 6ef59d9 #56 Exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap (#57)
 - 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
