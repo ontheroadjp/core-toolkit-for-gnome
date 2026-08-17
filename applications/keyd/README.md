@@ -14,6 +14,7 @@ keyd を使ったキーボードリマップ設定。`install.sh` が keyd 本�
 | `F2` | `Meta+←`（左半画面） | GNOME タイリング操作 |
 | `F3` | `Meta+→`（右半画面） | GNOME タイリング操作 |
 | `Ctrl+Space` | `Scroll_Lock` | Mozc 変換中に ibus が生の Ctrl+Space を先取りしてしまうのを避けるため、GNOME に渡す前に無関係なキーへ変換する |
+| `Ctrl+Shift+Space` | 変換なし（Ctrl+Shift+Space のまま） | 上記の remap は Shift を区別しないため、`[control+shift]` composite layer で `space = C-S-space` を明示バインドし、GNOME 側の `<Control><Shift>space`（Nuts Launcher）に生のキー入力が届くようにしている（#56） |
 
 Mozc 入力中のみ、`k` の直後に `j` を押すと未確定文字を破棄して Escape を送る
 （Vim 風の "kj" コンボ）。この挙動は `default.conf` に静的には書かれておらず、
