@@ -13,7 +13,7 @@ keyd を使ったキーボードリマップ設定。`install.sh` が keyd 本�
 | `F1` | `Meta+↑`（ウィンドウ最大化） | GNOME タイリング操作 |
 | `F2` | `Meta+←`（左半画面） | GNOME タイリング操作 |
 | `F3` | `Meta+→`（右半画面） | GNOME タイリング操作 |
-| `Ctrl+Space` | `Scroll_Lock` | Mozc 変換中に ibus が生の Ctrl+Space を先取りしてしまうのを避けるため、GNOME に渡す前に無関係なキーへ変換する |
+| `Ctrl+Space` | `Scroll_Lock` → 80ms後に `Ctrl` タップ | Mozc 変換中に ibus が生の Ctrl+Space を先取りしてしまうのを避けるため、GNOME に渡す前に無関係なキーへ変換する。続けて Ctrl 単体タップを送るのは、Ctrl 張り付き問題（下記「既知の問題」参照）への対策 |
 | `Ctrl+Shift+Space` | 変換なし（Ctrl+Shift+Space のまま） | 上記の remap は Shift を区別しないため、`[control+shift]` composite layer で `space = C-S-space` を明示バインドし、GNOME 側の `<Control><Shift>space`（Nuts Launcher）に生のキー入力が届くようにしている（#56） |
 
 Mozc 入力中のみ、`k` の直後に `j` を押すと未確定文字を破棄して Escape を送る
@@ -41,16 +41,22 @@ Mozc 入力中のみ、`k` の直後に `j` を押すと未確定文字を破棄
 > `scripts/core-gnome-settings/apply-settings.sh` が別途行う。
 > `default.conf` を変更した場合は `sudo keyd reload` で反映する。
 
-## 既知の問題（issue #51）
+## 既知の問題と対応（issue #51, #60）
 
 Mozc に未確定の変換がある状態で Ctrl+Space（CapsLock+Space）を押して FEP を
 切り替えると、以降のキー入力が Ctrl を押していないのに Ctrl+`<key>` として認識される
 「Ctrl が押しっぱなし」状態になることがある。`sudo keyd monitor -t` では evdev レベルの
 イベントは常に正しく対になっており、keyd 自体（evdev レベル）は原因ではないと確認済み。
 未確定の変換がある状態で FEP を切り替えると、その未確定文字列は破棄されず確定・挿入
-されたうえで切替が行われる。
+されたうえで切替が行われる。張り付き自体は毎回発生する。
 
-**暫定回避策**: もう一度 FEP を切り替える（Ctrl+Space をもう一度押す）と解消する。
+**対応（#60）**: Ctrl を単体で1回押すだけで張り付きが解消することが分かったため、
+`[control] space = macro(scrolllock 80ms leftcontrol)` として、Scroll_Lock 送出の
+80ms 後に合成の Ctrl タップを自動で送るようにした。80ms の間隔を空けているのは、
+間隔なしで送ると実際の物理 Ctrl キーの解放と競合し、解消が不安定になることが
+実機検証で分かったため。実機確認でほぼ解消されることを確認済みだが、100%の保証は
+ない。それでも発生した場合は、従来通りもう一度 FEP を切り替える（Ctrl+Space を
+もう一度押す）と解消する。
 
 **試して効果がなかった対応（issue #58）**:
 - `Scroll_Lock` の代わりに `Pause` へ変換する: `Scroll_Lock+Any` が `LockMods`
@@ -68,4 +74,4 @@ Mozc に未確定の変換がある状態で Ctrl+Space（CapsLock+Space）を�
   変え得ないと考えられる。
 
 原因調査・過去の対応状況は issue #51 とその native sub-issue（#52〜#54）、
-および #58 を参照。
+および #58・#60 を参照。

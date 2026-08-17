@@ -1,6 +1,6 @@
 ---
 name: keyd-default-conf
-description: keyd system-wide keymap, including the Mozc "kj"-to-Escape combo, the Ctrl+Space-to-Scroll_Lock fep-toggle remap, and the Ctrl+Shift+Space passthrough exemption
+description: keyd system-wide keymap, including the Mozc "kj"-to-Escape combo, the Ctrl+Space-to-Scroll_Lock fep-toggle remap with a trailing corrective Ctrl tap, and the Ctrl+Shift+Space passthrough exemption
 metadata:
   type: project
 ---
@@ -10,10 +10,11 @@ metadata:
 keyd のシステム全体キーマップ定義。ホームポジション改善（CapsLock/Ctrl 入替）、
 ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリング用ファンクション
 キー割り当てに加え、Mozc 入力中の Vim 風エスケープコンボ（`kj`）と、Ctrl+Space
-を Scroll_Lock に変換する fep-toggle 用 remap を提供する（`default.conf:1-29`）。
-Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタムショートカット
-`<Control><Shift>space`（Nuts Launcher）に生の Ctrl+Shift+Space を届けるための
-明示的な例外バインドも定義する（`default.conf:30-38`、#56）。
+を Scroll_Lock（+ 80ms後の合成 Ctrl タップ）に変換する fep-toggle 用 remap を
+提供する（`default.conf:1-34`）。Ctrl+Space remap は Shift の有無を区別しないため、
+GNOME カスタムショートカット `<Control><Shift>space`（Nuts Launcher）に生の
+Ctrl+Shift+Space を届けるための明示的な例外バインドも定義する
+（`default.conf:36-47`、#56）。
 
 ## 動作概要
 
@@ -29,12 +30,13 @@ Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタ�
   `keyd bind 'main.k = oneshotk(after_k, k)'` を発行した時にだけ有効になる
   （動的バインド、`applications/keyd/fep-toggle.sh.md` 参照）。Mozc → US へ
   戻ると同じ経路で `main.k = k` に戻され、`after_k` は無効化される。
-- `[control]` レイヤーで `space = scrolllock` を定義する（`default.conf:20-28`）。
-  CapsLock（`leftcontrol` として動作）または右 Ctrl を押しながら Space を押すと、
-  評価は keyd（evdev レイヤー、X11/Wayland/ibus より手前）で完結し、OS には
-  Ctrl+Space ではなく Scroll_Lock が渡る。
+- `[control]` レイヤーで `space = macro(scrolllock 80ms leftcontrol)` を定義する
+  （`default.conf:19-34`）。CapsLock（`leftcontrol` として動作）または右 Ctrl を
+  押しながら Space を押すと、評価は keyd（evdev レイヤー、X11/Wayland/ibus より
+  手前）で完結し、OS には Ctrl+Space ではなく Scroll_Lock が渡り、続けて 80ms 後に
+  合成の Ctrl（leftcontrol）タップが送られる。
 - `[control+shift]` composite レイヤーで `space = C-S-space` を定義する
-  （`default.conf:30-38`）。Control と Shift が同時に held の間はこのレイヤーが
+  （`default.conf:36-47`）。Control と Shift が同時に held の間はこのレイヤーが
   `[control]` より優先され、Ctrl+Shift+Space を押しても Scroll_Lock 変換されず、
   Control・Shift を明示的に再付与した Space（＝素の Ctrl+Shift+Space）が OS に渡る。
 
@@ -63,6 +65,18 @@ Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタ�
   OSD 表示）が確認されなかったため採用した。
 - GNOME 側のバインド先は `scripts/core-gnome-settings/apply-settings.sh` の
   `_register_fep_toggle_keybinding`（`Scroll_Lock`）と対で維持する必要がある。
+- `macro(scrolllock 80ms leftcontrol)`（`default.conf:34`）: Mozc に未確定の変換が
+  ある状態で FEP を切り替えると、以降のキー入力が Ctrl を押していないのに
+  Ctrl+`<key>` として認識される「Ctrl が押しっぱなし」状態になることがある
+  （issue #51）。原因はコンポジタ側のモディファイア状態管理にあると見られ、
+  keyd 自体（evdev レベル）は原因ではないことを `sudo keyd monitor -t` で確認済み。
+  PR #59 では D-Bus 経由での複数回切替・`Scroll_Lock`→`Pause` への変更・
+  切替前の `Escape` 送信などを試したがいずれも解消しなかった（#58）。その後、
+  張り付き発生後に Ctrl キーを単体で1回押すだけで解消することが実機検証で
+  判明したため、`scrolllock` に続けて合成の `leftcontrol` タップを追加した
+  （#60）。`scrolllock` の直後（間隔なし）に送ると、実際の物理 Ctrl キーの
+  解放とタイミングが競合し解消が不安定になることも実機検証で判明したため、
+  80ms の待機を挟んでいる。
 - `[control+shift]`（composite レイヤー）を空のまま定義するだけでは不十分だった
   （実機検証で確認済み、#56）。`man keyd` の COMPOSITE LAYERS の記述どおり、
   composite レイヤーは自身が明示的にバインドしたキーのみ優先し、未バインドの
@@ -83,7 +97,7 @@ Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタ�
 - 実行時に上書きされる項目: `[main] k` バインドは
   `applications/keyd/fep-toggle.sh --keyd-us|--keyd-mozc` の `keyd bind`
   呼び出しにより動的に変わる。
-- `[control] space = scrolllock` の変換先は
+- `[control] space = macro(scrolllock 80ms leftcontrol)` の `scrolllock` 部分は
   `scripts/core-gnome-settings/apply-settings.sh` が登録する GNOME カスタム
   キーバインディング（`Scroll_Lock` → `/usr/local/bin/fep-toggle`）と対応する。
 - `[control+shift] space = C-S-space` は、本リポジトリ外の別リポジトリ
@@ -106,7 +120,8 @@ Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタ�
 
 ## 変更履歴（git log より自動生成）
 
-- 24c0e5b fix(#56): exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap
+- 1261b23 fix(#60): send a single Ctrl tap after Scroll_Lock to clear stuck-Ctrl on FEP toggle
+- 6ef59d9 #56 Exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap (#57)
 - 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
