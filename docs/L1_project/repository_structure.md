@@ -9,11 +9,6 @@
 ├── tests/                                # install-all.sh 動作検証テスト群
 │   ├── test_install.sh                  # install-all.sh の構文・参照ファイル・呼び出し構成を検証
 │   └── lint_shell.sh                    # 全 install.sh / install-all.sh を shellcheck/bash -n で構文チェック
-├── diagnostics/                          # 単一コンポーネントに閉じない横断的な調査・診断ツール（手動実行、インストール対象外）
-│   ├── README.md
-│   └── key-input-management/             # keyd・ibus・GNOME Shell 拡張・D-Bus を横断するキー入力/FEP切替まわりの診断ツール
-│       ├── README.md
-│       └── capture-ctrl-stuck-diagnostics.sh  # keyd/libinput/ibus のイベントログを個別採取（issue #51 調査用）
 ├── applications/
 │   ├── alacritty/                        # Alacritty 設定 + install.sh
 │   │   ├── alacritty.toml               # Alacritty 本体設定（→ ~/.config/alacritty/）
@@ -234,17 +229,6 @@ GNOMEカスタムショートカットで16kHzモノラルWAVの録音をトグ�
   参照ファイルの実在確認、`install-all.sh` が全 per-app スクリプトを呼び出していることの確認、
   ツールカバレッジ確認、`t480s-apps-install.sh` 削除確認（5テストスイート）
 - `lint_shell.sh`: リポジトリ内全 `install.sh` を shellcheck または bash -n で構文チェック
-
-### `diagnostics/`
-`applications/` や `scripts/` にある単一コンポーネントに閉じない、複数コンポーネントを
-横断する調査・診断ツールの置き場。`install-all.sh` の対象外で、特定 issue の原因調査の
-ために手動実行する。
-- `key-input-management/capture-ctrl-stuck-diagnostics.sh`: keyd・libinput・ibus の
-  イベント/ログをモード引数（`keyd`/`libinput`/`ibus`）で1系統ずつファイルへ記録する。
-  `keyd`/`libinput` モードは root 権限を要するコマンドを実行するが、スクリプト自体は
-  `sudo` の呼び出し・認証キャッシュを一切行わず、ユーザーがスクリプト起動時に手動で
-  `sudo` を付与する運用にしている。issue #51（Ctrl+Space での FEP 切替時に Mozc の
-  未確定変換と重なると Ctrl が押しっぱなしになる不具合）の原因切り分け用。
 
 ## 未確認事項
 
