@@ -251,3 +251,12 @@ Ubuntu 24.04 / GNOME (Wayland) での Typinator 相当のテキスト展開。
 | 前提 | `fep-switcher@local`（本リポジトリ内、`scripts/fep-switcher/`）と、外部の search-light GNOME 拡張（本リポジトリ外で別途インストール）の両方が有効であること | `README.md`（`gnome-extensions/search-light/README.md`） |
 | インストール | `~/.local/bin/trigger-search-light` へシンボリックリンクを作成するのみ。GNOME カスタムキーバインド登録はユーザーが手動で行う | `install.sh` |
 | 呼び出し元 | ルート `install-all.sh` からは呼び出されない（個別実行が必要） | `install-all.sh` に該当行なしを確認済み |
+
+## 13. `diagnostics/key-input-management/capture-ctrl-stuck-diagnostics.sh` — キー入力管理まわりの横断診断ツール
+
+| 項目 | 内容 | 根拠 |
+|---|---|---|
+| 役割 | issue #51（Ctrl+Space での FEP 切替時に Mozc の未確定変換と重なると Ctrl が押しっぱなしになる不具合）の原因切り分けのため、keyd・libinput・ibus のイベント/ログをモード引数（`keyd`/`libinput`/`ibus`）で1系統ずつファイルへ記録する | `diagnostics/key-input-management/capture-ctrl-stuck-diagnostics.sh:1-33` |
+| 権限 | `keyd`/`libinput` モードは root 権限を要するコマンドを実行するが、スクリプト自体は `sudo` の呼び出し・認証キャッシュを一切行わず、ユーザーがスクリプト起動時に手動で `sudo` を付与する | `capture-ctrl-stuck-diagnostics.sh:13-24`、`diagnostics/key-input-management/README.md` |
+| 配置理由 | 対象が keyd 単体ではなく ibus・GNOME Shell 拡張（`scripts/fep-switcher/`）・D-Bus を横断するため、`applications/keyd/` ではなく横断診断用の `diagnostics/` に配置 | `diagnostics/README.md` |
+| 呼び出し元 | なし（ユーザーが手動でターミナルから直接実行。`install-all.sh` の対象外） | `docs/L3_implementation/diagnostics/key-input-management/capture-ctrl-stuck-diagnostics.sh.md` |

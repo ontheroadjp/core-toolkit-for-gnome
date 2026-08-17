@@ -65,3 +65,7 @@ ibus・GNOME Shell 拡張（`scripts/fep-switcher/`）・D-Bus を横断する�
 - 実際のバグ再現（Mozc 未確定変換 + CapsLock+Space）を伴う採取・原因特定は
   本ツールのスコープ外（issue #53 で実施）。本ツールは非再現のドライラン
   （数秒起動 → Ctrl+C → ログファイル生成確認）のみで動作確認済み。
+
+## 変更履歴（git log より自動生成）
+
+- 3c3ba32 feat(#52): add diagnostic capture tooling for Ctrl-stuck reproduction
