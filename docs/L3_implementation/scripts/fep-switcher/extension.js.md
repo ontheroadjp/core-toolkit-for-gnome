@@ -67,3 +67,8 @@ GNOME Shell 拡張。D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher`
   責務外として切り分け済み。
 - `sudo -n` が NOPASSWD ルール未設定などで失敗した場合、`console.error` に
   ログが出るのみで、ユーザーへの通知は行われない。
+
+## 変更履歴（git log より自動生成）
+
+- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- 478c73d refactor(#15): split into fep-switcher core and app-switch-us-input client

@@ -70,3 +70,8 @@ GNOME 環境向けの `gsettings` 一括適用スクリプト。アニメーシ�
   reset により GNOME 標準の入力ソース循環手段が失われる。`fep-toggle` が
   US/Mozc の2択切替のみを代替する設計のため、他の入力ソースの切替手段は
   別途用意する必要がある。
+
+## 変更履歴（git log より自動生成）
+
+- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- edc8e10 refactor: split t480s/ into core-gnome-settings and core-t480s-settings

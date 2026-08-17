@@ -45,3 +45,9 @@ keyd 本体のインストール、`/etc/keyd` への設定配置、および `f
 - 本スクリプトは `Ctrl+Space` キーバインドや sudoers ルールの設定は行わない
   （`scripts/core-gnome-settings/apply-settings.sh` の責務）。両者は別々に
   実行する必要がある。
+
+## 変更履歴（git log より自動生成）
+
+- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
+- 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/

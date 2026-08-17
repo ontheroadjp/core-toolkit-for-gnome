@@ -55,3 +55,8 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
   ファイル上の（`k` バインドなしの）状態に戻る。次回 FEP 切替時に再同期される。
 - `after_k` レイヤーはコメントアウトされた layer 化案（`capslock`/`leftcontrol`）
   とは独立した仕組みであり、両者は今回同時に検討されたが後者は未採用。
+
+## 変更履歴（git log より自動生成）
+
+- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/

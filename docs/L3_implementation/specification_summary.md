@@ -154,8 +154,8 @@ GNOME 入力ソースの切替を「コア D-Bus サービス」と「イベン�
 
 | 項目 | 内容 | 根拠 |
 |---|---|---|
-| 役割 | D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher` を公開するのみ | `fep-switcher/extension.js` |
-| メソッド | `SwitchToUs()`: xkb:us を activate / `SwitchToJa()`: ibus:mozc-jp を activate | `fep-switcher/extension.js:41-50` |
+| 役割 | D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher` を公開し、入力ソース切替と keyd の `k` バインド同期を行う | `fep-switcher/extension.js` |
+| メソッド | `SwitchToUs()`: xkb:us を activate / `SwitchToJa()`: ibus:mozc-jp を activate。いずれも直後に `_syncKeyd()` を呼び、`sudo -n /usr/local/bin/fep-toggle --keyd-us\|--keyd-mozc` で keyd の `k` バインド（Mozc 時のみ有効な `kj`→Escape コンボ）を同期する | `fep-switcher/extension.js:41-75` |
 | インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/fep-switcher@local` へ symlink 作成 | `install-all.sh:49-51` |
 
 ### `scripts/app-switch-us-input/` — ウィンドウフォーカスクライアント

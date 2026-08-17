@@ -56,3 +56,7 @@ keyd の `k` バインド同期と、`Ctrl+Space` キーバインドから起動
 - 無引数モードは `ibus engine` の出力にのみ依存して切替方向を決める。
   `ibus` が未起動、または `mozc-jp` 以外の非 US エンジンが選択されている場合の
   挙動は「Mozc 以外は全て US 扱い」となる（`fep-toggle.sh:16-38` の `case` 文）。
+
+## 変更履歴（git log より自動生成）
+
+- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
