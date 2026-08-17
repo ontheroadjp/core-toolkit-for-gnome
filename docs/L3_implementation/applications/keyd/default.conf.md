@@ -82,5 +82,6 @@ ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリ�
 
 ## 変更履歴（git log より自動生成）
 
-- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- a9682b1 fix(#49): remap Ctrl+Space to Scroll_Lock so fep-toggle survives Mozc composition
+- f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/

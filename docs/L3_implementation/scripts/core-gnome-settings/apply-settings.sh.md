@@ -95,5 +95,6 @@ sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
 
 ## 変更履歴（git log より自動生成）
 
-- 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
+- a9682b1 fix(#49): remap Ctrl+Space to Scroll_Lock so fep-toggle survives Mozc composition
+- f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - edc8e10 refactor: split t480s/ into core-gnome-settings and core-t480s-settings
