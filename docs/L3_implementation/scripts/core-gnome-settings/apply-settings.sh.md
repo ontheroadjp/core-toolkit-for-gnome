@@ -1,6 +1,6 @@
 ---
 name: core-gnome-settings-apply-settings-sh
-description: Applies GNOME gsettings, including the Ctrl+Space fep-toggle keybinding and its sudoers rule
+description: Applies GNOME gsettings, including the Scroll_Lock fep-toggle keybinding (keyd-converted Ctrl+Space) and its sudoers rule
 metadata:
   type: project
 ---
@@ -8,10 +8,10 @@ metadata:
 ## 目的・役割
 
 GNOME 環境向けの `gsettings` 一括適用スクリプト。アニメーション・キー
-リピート・ウィンドウ/ワークスペース切替・フォントに加え、`Ctrl+Space` を
-`/usr/local/bin/fep-toggle` にバインドする custom keybinding の登録と、
-`fep-toggle` 用の passwordless sudo ルールの自動設置を行う
-（`apply-settings.sh:1-125`）。
+リピート・ウィンドウ/ワークスペース切替・フォントに加え、keyd が
+`Ctrl+Space` を変換した `Scroll_Lock` を `/usr/local/bin/fep-toggle` に
+バインドする custom keybinding の登録と、`fep-toggle` 用の passwordless
+sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
 
 ## 動作概要
 
@@ -21,12 +21,15 @@ GNOME 環境向けの `gsettings` 一括適用スクリプト。アニメーシ�
   `set` ではなく `reset` する（`apply-settings.sh:23`）。`Ctrl+Space` は
   代わりに custom keybinding 経由で `/usr/local/bin/fep-toggle` を起動する
   ため、標準バインドと衝突させないための reset。
-- `_register_fep_toggle_keybinding()`（`apply-settings.sh:59-92`）:
+- `_register_fep_toggle_keybinding()`（`apply-settings.sh:65-104`）:
   `org.gnome.settings-daemon.plugins.media-keys` の `custom-keybindings`
   スロットを `custom0`, `custom1`, ... と走査し、既に command に
-  `fep-toggle` を含むスロットがあれば何もせず終了（冪等）。なければ空き
-  スロットに `name`/`command`/`binding`（`<Control>space`）を設定し、
-  `custom-keybindings` 配列に追記する。
+  `fep-toggle` を含むスロットがあれば、その `binding` が現在の目標値
+  （`Scroll_Lock`）と一致するか確認する。一致しなければ `binding` だけを
+  更新（旧 `<Control>space` 登録済みの既存マシンを移行するため）、一致
+  すれば何もせず終了（冪等）。スロット自体が無ければ空きスロットに
+  `name`/`command`/`binding`（`Scroll_Lock`）を設定し、`custom-keybindings`
+  配列に追記する。
 - `_configure_fep_toggle_sudoers()`（`apply-settings.sh:99-122`）:
   `<実行ユーザー> ALL=(root) NOPASSWD: /usr/local/bin/fep-toggle` という
   1行ルールを一時ファイルに書き、`visudo -c -f` で構文検証してから

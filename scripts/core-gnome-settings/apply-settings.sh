@@ -55,11 +55,17 @@ gsettings set org.gnome.desktop.interface font-antialiasing 'grayscale'
 # -----------------------------------------
 # fep-toggle: Ctrl+Space custom keybinding
 # applications/keyd/install.sh が /usr/local/bin/fep-toggle を配置する前提
+# Ctrl+Space は applications/keyd/default.conf の [control] レイヤーで
+# 評価される前に Scroll_Lock へ変換される（Mozc 変換中に ibus が生の
+# Ctrl+Space を先取りしてしまうのを避けるため）。F13-F24 は現在の "us"
+# XKB レイアウトにキーシンボル定義が無く GNOME が解決できないため不採用
+# （/usr/share/X11/xkb/symbols/pc に F13+ の定義なし）。ここでは変換後の
+# Scroll_Lock をバインドする。
 # -----------------------------------------
 _register_fep_toggle_keybinding() {
     local dconf_base="/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
     local command="/usr/local/bin/fep-toggle"
-    local binding="<Control>space"
+    local binding="Scroll_Lock"
 
     local existing_list
     existing_list=$(gsettings get org.gnome.settings-daemon.plugins.media-keys custom-keybindings 2>/dev/null || echo "@as []")
@@ -69,7 +75,14 @@ _register_fep_toggle_keybinding() {
         local slot_cmd
         slot_cmd=$(gsettings get org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:"${dconf_base}/custom${idx}/" command 2>/dev/null || echo "")
         if [[ "$slot_cmd" == *"fep-toggle"* ]]; then
-            echo "fep-toggle keybinding already registered at ${dconf_base}/custom${idx}/. Skipped."
+            local slot_binding
+            slot_binding=$(gsettings get org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:"${dconf_base}/custom${idx}/" binding 2>/dev/null || echo "")
+            if [[ "$slot_binding" != "'${binding}'" ]]; then
+                gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:"${dconf_base}/custom${idx}/" binding "${binding}"
+                echo "Done: fep-toggle keybinding updated at ${dconf_base}/custom${idx}/ (${slot_binding} -> ${binding})"
+            else
+                echo "fep-toggle keybinding already registered at ${dconf_base}/custom${idx}/. Skipped."
+            fi
             return
         fi
         idx=$((idx + 1))
