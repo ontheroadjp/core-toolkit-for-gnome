@@ -106,6 +106,7 @@ Ctrl+Space remap は Shift の有無を区別しないため、GNOME カスタ�
 
 ## 変更履歴（git log より自動生成）
 
-- a9682b1 fix(#49): remap Ctrl+Space to Scroll_Lock so fep-toggle survives Mozc composition
+- 24c0e5b fix(#56): exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap
+- 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
 - 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
