@@ -34,7 +34,9 @@ Ubuntu / GNOME が動作する環境であれば機種を問わず利用でき�
   で録音トグル、文字起こし結果を Wayland クリップボードにコピーする。
   `install.sh` でモデルを常駐させるsystemdユーザーサービスも登録する。
 - `scripts/fep-switcher/` — GNOME 入力ソース切替コア拡張（`fep-switcher@local`）。
-  `SwitchToUs()` / `SwitchToJa()` を D-Bus 経由で提供する。イベント処理は持たない。
+  `SwitchToUs()` / `SwitchToJa()` を D-Bus 経由で提供し、切替のたびに
+  `applications/keyd/fep-toggle.sh` 経由で keyd の `k` バインド（Mozc 時のみの
+  `kj`→Escape コンボ）も同期する。
 - `scripts/app-switch-us-input/` — ウィンドウフォーカス時に US へ切替するクライアント拡張。
   `fep-switcher@local` の D-Bus メソッドを呼び出す。
 - `scripts/tmux-switch-us-input/` — tmux の pane 切り替え時に `fep-switcher@local` へ
@@ -45,7 +47,8 @@ Ubuntu / GNOME が動作する環境であれば機種を問わず利用でき�
   メールアドレス等に展開する（Wayland 対応 Inject backend）。`install.sh` で
   `~/.config/espanso` へのシンボリックリンクと `espanso-toggle` スクリプトを配置する。
 - `applications/keyd/` — keyd キーリマッパー設定。`install.sh` で `/etc/keyd` へ
-  シンボリックリンクを作成する（`sudo` 必要）。
+  シンボリックリンクを作成し、`fep-toggle.sh` を `/usr/local/bin/fep-toggle`
+  へ配置する（`sudo` 必要）。
 - `applications/yt-dlp/` — yt-dlp ダウンロード設定。`install.sh` で
   `~/.config/yt-dlp` へのシンボリックリンクを作成する。
 - `applications/chrome/` — CDP（`--remote-debugging-port=9222`）を有効化した専用プロファイルの
@@ -86,7 +89,7 @@ sudo ./applications/keyd/install.sh  # sudo 必要
 # 汎用ツール・CLIツールのセットアップ（sudo必須、ネットワーク必須）
 ./scripts/core-tools/install.sh
 
-# GNOME デスクトップ設定の適用（sudo 不要）
+# GNOME デスクトップ設定の適用（fep-toggle 用 sudoers ルール設置のため sudo 必要）
 ./scripts/core-gnome-settings/apply-settings.sh
 
 # ThinkPad 固有: バッテリー充電閾値の設定（sudo 必須）

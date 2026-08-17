@@ -38,15 +38,39 @@ export default class FepSwitcherExtension extends Extension {
         this._inputSourceManager = null;
     }
 
+    _syncKeyd(mode) {
+        const arg = mode === 'mozc'
+            ? '--keyd-mozc'
+            : '--keyd-us';
+
+        try {
+            Gio.Subprocess.new(
+                [
+                    '/usr/bin/sudo',
+                    '-n',
+                    '/usr/local/bin/fep-toggle',
+                    arg,
+                ],
+                Gio.SubprocessFlags.NONE
+            );
+        } catch (e) {
+            console.error(
+                `[FepSwitcher] Failed to sync keyd (${mode}): ${e}`
+            );
+        }
+    }
+
     SwitchToUs() {
         const source = Object.values(this._inputSourceManager.inputSources)
             .find(s => s.type === 'xkb' && s.id === 'us');
         source?.activate();
+        this._syncKeyd('us');
     }
 
     SwitchToJa() {
         const source = Object.values(this._inputSourceManager.inputSources)
             .find(s => s.type === 'ibus' && s.id === 'mozc-jp');
         source?.activate();
+        this._syncKeyd('mozc');
     }
 }

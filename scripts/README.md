@@ -8,7 +8,7 @@ GNOME デスクトップ環境の入力・通知・音声入力に関するス�
 | ディレクトリ | 種別 | 概要 |
 |---|---|---|
 | [`core-tools/`](core-tools/README.md) | シェルスクリプト | 開発基盤ツール（gh, ghq, mise, claude, codex 等）の一括インストール |
-| [`fep-switcher/`](fep-switcher/README.md) | GNOME 拡張機能 | 入力ソース切替 D-Bus サービス（コアコンポーネント） |
+| [`fep-switcher/`](fep-switcher/README.md) | GNOME 拡張機能 | 入力ソース切替 D-Bus サービス（コアコンポーネント）。切替のたびに keyd の kj エスケープコンボも同期する |
 | [`app-switch-us-input/`](app-switch-us-input/README.md) | GNOME 拡張機能 | ターミナルフォーカス時に自動で US 入力へ切替 |
 | [`tmux-switch-us-input/`](tmux-switch-us-input/README.md) | シェルスクリプト | tmux ペイン切替時に US 入力へ切替 |
 | [`vim-switch-us-input/`](vim-switch-us-input/README.md) | Vim プラグイン | Vim Insert モード終了時に US 入力へ切替 |
@@ -22,12 +22,17 @@ GNOME デスクトップ環境の入力・通知・音声入力に関するス�
 ```
 fep-switcher@local（GNOME 拡張）
         ↑ D-Bus: SwitchToUs()
+        │       ↓ 呼び出しのたびに applications/keyd/fep-toggle.sh 経由で
+        │         keyd の kj エスケープコンボ（Mozc 時のみ）を同期
         ├── app-switch-us-input@local（GNOME 拡張）  ← ウィンドウフォーカス
         ├── switch-input-to-us（シェルスクリプト）   ← tmux ペイン切替
         └── vim-switch-us-input.vim（Vim プラグイン）← Insert モード終了
 ```
 
 `fep-switcher@local` を有効化しておくことがこれら全クライアントの前提条件。
+keyd 側の同期には `applications/keyd/install.sh` による `/usr/local/bin/fep-toggle`
+の配置と、`scripts/core-gnome-settings/apply-settings.sh` による sudoers 設定が
+別途必要（`applications/keyd/README.md` 参照）。
 
 ## インストール（全体）
 

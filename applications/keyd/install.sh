@@ -17,4 +17,9 @@ sudo rm -rf /etc/keyd
 sudo ln -sf "${SCRIPT_DIR}" /etc/keyd
 
 echo "Done: keyd config installed"
+
+chmod +x "${SCRIPT_DIR}/fep-toggle.sh"
+sudo ln -sf "${SCRIPT_DIR}/fep-toggle.sh" /usr/local/bin/fep-toggle
+
+echo "Done: fep-toggle installed at /usr/local/bin/fep-toggle"
 exit 0
