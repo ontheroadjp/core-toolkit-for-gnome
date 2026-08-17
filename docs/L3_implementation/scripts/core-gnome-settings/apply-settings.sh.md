@@ -30,14 +30,14 @@ sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
   すれば何もせず終了（冪等）。スロット自体が無ければ空きスロットに
   `name`/`command`/`binding`（`Scroll_Lock`）を設定し、`custom-keybindings`
   配列に追記する。
-- `_configure_fep_toggle_sudoers()`（`apply-settings.sh:99-122`）:
+- `_configure_fep_toggle_sudoers()`（`apply-settings.sh:112-135`）:
   `<実行ユーザー> ALL=(root) NOPASSWD: /usr/local/bin/fep-toggle` という
   1行ルールを一時ファイルに書き、`visudo -c -f` で構文検証してから
   `sudo install -m 0440 -o root -g root` で `/etc/sudoers.d/fep-toggle` に
   設置する。`/etc/sudoers.d/fep-toggle` に同一ルールが既に存在する場合は
   スキップ（冪等）。検証に失敗した場合は一時ファイルを削除して `exit 1`
   し、不正な sudoers ファイルを設置しない。
-- ファイル末尾で両関数を呼び出す（`apply-settings.sh:124-125`）。
+- ファイル末尾で両関数を呼び出す（`apply-settings.sh:137-138`）。
 
 ## 重要な設計判断
 
@@ -46,17 +46,32 @@ sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
   防いでいる（sudoers の構文エラーはシステム全体の `sudo` を壊しうるため）。
 - 冪等性を最優先し、両関数とも「既存の設定/ルールと一致すれば何もしない」
   判定を先頭に置いている。再実行しても custom-keybinding スロットが
-  重複したり、sudoers ファイルが二重に書かれたりしない。
+  重複したり、sudoers ファイルが二重に書かれたりしない。ただし
+  `_register_fep_toggle_keybinding()` は「スロットの有無」だけでなく
+  「binding 値の一致」も冪等判定に含める（後述）。
 - ファイル冒頭は元々フラットな `gsettings` 呼び出しの羅列だったが、
   冪等な走査・検証ロジックが必要な2機能のみ関数化した。既存のフラットな
   記述スタイルは変更していない。
+- `binding` の目標値は当初 `<Control>space`（生の Ctrl+Space）だったが、
+  Mozc 未確定入力中に ibus がキーイベントを先取りしてしまい GNOME の
+  カスタムキーバインディングまで届かない問題（issue #49）があったため、
+  `applications/keyd/default.conf` の `[control] space = scrolllock` で
+  評価前に変換される `Scroll_Lock` へ変更した（詳細は
+  `applications/keyd/default.conf.md` 参照）。これに伴い、既に
+  `<Control>space` で登録済みの既存マシンを再実行だけで `Scroll_Lock` に
+  移行できるよう、スロットが既存でも `binding` が目標値と異なれば
+  `gsettings set` で更新するロジックを追加した（単純な「スロットが
+  あれば何もしない」判定のままだと、binding 値の変更が再実行しても永久に
+  反映されない）。
 
 ## 統合ポイント
 
 - 前提: `applications/keyd/install.sh` が `/usr/local/bin/fep-toggle` を
   配置済みであること（`applications/keyd/install.sh.md` 参照）。
-- `Ctrl+Space` 押下時の呼び出し先: `/usr/local/bin/fep-toggle`
-  （無引数モード、`applications/keyd/fep-toggle.sh.md` 参照）。
+- keyd が Ctrl+Space を変換した `Scroll_Lock` 押下時の呼び出し先:
+  `/usr/local/bin/fep-toggle`（無引数モード、
+  `applications/keyd/fep-toggle.sh.md` 参照）。変換自体は
+  `applications/keyd/default.conf` の `[control]` レイヤーが担う。
 - `sudo -n /usr/local/bin/fep-toggle ...` は本スクリプトが設置する sudoers
   ルールに依存する（`scripts/fep-switcher/extension.js` の `_syncKeyd()`、
   `fep-toggle.sh` の無引数モード末尾）。
@@ -73,6 +88,10 @@ sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
   reset により GNOME 標準の入力ソース循環手段が失われる。`fep-toggle` が
   US/Mozc の2択切替のみを代替する設計のため、他の入力ソースの切替手段は
   別途用意する必要がある。
+- 本スクリプトが `binding` を更新しても、`applications/keyd/default.conf`
+  側の変更が keyd デーモンに反映されていなければ Ctrl+Space は機能しない。
+  `default.conf` の変更後は別途 `sudo keyd reload` が必要（自動 reload は
+  信頼できないことを実機で確認済み、`default.conf.md` 参照）。
 
 ## 変更履歴（git log より自動生成）
 
