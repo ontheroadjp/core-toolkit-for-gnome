@@ -39,3 +39,15 @@ Mozc 入力中のみ、`k` の直後に `j` を押すと未確定文字を破棄
 > キーバインドと `fep-toggle` 用の sudoers 設定は
 > `scripts/core-gnome-settings/apply-settings.sh` が別途行う。
 > `default.conf` を変更した場合は `sudo keyd reload` で反映する。
+
+## 既知の問題（issue #51）
+
+Mozc に未確定の変換がある状態で Ctrl+Space（CapsLock+Space）を押して FEP を
+切り替えると、以降のキー入力が Ctrl を押していないのに Ctrl+`<key>` として認識される
+「Ctrl が押しっぱなし」状態になることがある。`sudo keyd monitor -t` では evdev レベルの
+イベントは常に正しく対になっており、keyd 自体は原因ではないと確認済み。
+
+**暫定回避策**: もう一度 FEP を切り替える（CapsLock+Space を再度押す）と解消する。
+
+原因調査・恒久対応の状況は issue #51 とその native sub-issue（#52〜#54）を参照。
+原因切り分け用の診断ツールは `diagnostics/key-input-management/` にある。
