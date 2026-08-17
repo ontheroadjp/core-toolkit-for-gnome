@@ -65,6 +65,7 @@ check_file "espanso-toggle exists"        "${REPO_DIR}/applications/espanso/espa
 check_file "google-chrome-cdp exists"     "${REPO_DIR}/applications/chrome/google-chrome-cdp"
 check_file "google-chrome-cdp.desktop"   "${REPO_DIR}/applications/chrome/google-chrome-cdp.desktop"
 check_file "keyd/default.conf exists"    "${REPO_DIR}/applications/keyd/default.conf"
+check_file "keyd/fep-toggle.sh exists"   "${REPO_DIR}/applications/keyd/fep-toggle.sh"
 check_file "alacritty.toml exists"       "${REPO_DIR}/applications/alacritty/alacritty.toml"
 check_file "yt-dlp config exists"        "${REPO_DIR}/applications/yt-dlp/config"
 check_file "fep-switcher extension.js"   "${REPO_DIR}/scripts/fep-switcher/extension.js"
