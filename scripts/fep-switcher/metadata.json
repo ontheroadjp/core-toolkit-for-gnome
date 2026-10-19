@@ -2,6 +2,6 @@
   "name": "FEP Switcher",
   "description": "D-Bus service to switch GNOME input sources. Core component — no event handling.",
   "uuid": "fep-switcher@local",
-  "shell-version": ["46"],
+  "shell-version": ["46", "50"],
   "version": 1
 }
