@@ -6,7 +6,7 @@ CONFIG_DIR="${HOME}/.config"
 
 mkdir -p "${CONFIG_DIR}"
 
-ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/alacritty"
+ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/alacritty"
 
 echo "Done: alacritty installed"
 exit 0

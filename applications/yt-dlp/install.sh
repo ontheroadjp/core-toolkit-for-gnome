@@ -14,7 +14,7 @@ else
 fi
 
 mkdir -p "${CONFIG_DIR}"
-ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/yt-dlp"
+ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/yt-dlp"
 
 echo "Done: yt-dlp config installed"
 exit 0

@@ -20,7 +20,7 @@ mkdir -p "${BIN_DIR}" "${CONFIG_DIR}"
 chmod +x "${SCRIPT_DIR}/espanso-toggle"
 ln -sf "${SCRIPT_DIR}/espanso-toggle" "${BIN_DIR}/espanso-toggle"
 
-ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/espanso"
+ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/espanso"
 
 echo "Done: espanso config installed"
 echo ""
