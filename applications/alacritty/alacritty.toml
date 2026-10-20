@@ -1,7 +1,4 @@
-# ---- for v0.13.0 -------
-#[general]
-# ---- for v0.13.0 -------
-
+[general]
 import = ["~/.config/alacritty/theme/tokyo-night.toml"]
 #import = ["~/.config/alacritty/theme/dracula.toml"]
 
