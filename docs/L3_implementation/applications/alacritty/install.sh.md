@@ -34,3 +34,9 @@ Alacritty に repo 内の `alacritty.toml` / `theme/` を読ませるインス�
 - `~/.config/alacritty` が実ディレクトリ（symlink でない）として既に存在する場合、
   `ln -sfn` はその配下にリンクを作る。置き換えは行わない
 - repo を移動するとリンクが切れる
+
+## 変更履歴（git log より自動生成）
+
+- 22d2117 fix(#62): use ln -sfn for config directory links to stop self-referencing links
+- f246c6e fix: stop overriding alacritty desktop entry
+- 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/

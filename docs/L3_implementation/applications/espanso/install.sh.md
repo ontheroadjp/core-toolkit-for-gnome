@@ -37,3 +37,10 @@ espanso（Wayland 版 .deb）を導入し、`espanso-toggle` を `~/.local/bin` 
 - `wget` / `sudo apt install` を含むため、AI が自律的に実行することは想定しない（`CLAUDE.md` 参照）。
   テストでも実行はせず静的確認のみ
 - `match/private.yml` は `.gitignore` 対象
+
+## 変更履歴（git log より自動生成）
+
+- 22d2117 fix(#62): use ln -sfn for config directory links to stop self-referencing links
+- 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
+- 8045f0a chore(#29): reorganize root/ dotfiles into applications/ and gnome-extensions/
+- da97c47 feat(espanso): add toggle script, installer, GNOME shortcut, and base matches

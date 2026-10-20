@@ -44,3 +44,13 @@ yt-dlp, mpv-player）は `^ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` に一致す�
   実行をスキップする（既存のリンクを誤ってテスト結果とみなさないため）
 - 2026-10-20 時点で `scripts/core-tools/install.sh` が shellcheck SC1091（`. /etc/os-release`、info）で
   Test 1 を FAIL させており、全体の終了コードは 1 になる（本テストの変更とは無関係）
+
+## 変更履歴（git log より自動生成）
+
+- 22d2117 fix(#62): use ln -sfn for config directory links to stop self-referencing links
+- f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
+- cc53830 feat(#38): add docker to core tools installer
+- f246c6e fix: stop overriding alacritty desktop entry
+- d3f2eab chore: rename install.sh to install-all.sh and add manual steps for settings scripts
+- c0e1c6f test(#32): add lint_shell.sh and consolidate install.sh tests under tests/
+- 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
