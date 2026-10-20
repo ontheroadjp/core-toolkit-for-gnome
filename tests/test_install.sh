@@ -137,6 +137,52 @@ fi
 
 # -----------------------------------------
 echo ""
+echo "--- Test 6: config directory links use ln -sfn ---"
+
+# On re-run, `ln -sf DIR LINK` dereferences an existing LINK that points to a
+# directory and creates the new link *inside* the repo (e.g.
+# applications/alacritty/alacritty). -n replaces the link itself.
+CONFIG_LINK_SCRIPTS=(
+    "applications/alacritty/install.sh"
+    "applications/espanso/install.sh"
+    "applications/yt-dlp/install.sh"
+    "applications/mpv-player/install.sh"
+)
+
+for script in "${CONFIG_LINK_SCRIPTS[@]}"; do
+    f="${REPO_DIR}/${script}"
+    # shellcheck disable=SC2016  # matching literal ${SCRIPT_DIR} in the script source
+    if grep -qE '^ln -sf "\$\{SCRIPT_DIR\}" "\$\{CONFIG_DIR\}/' "$f"; then
+        fail "config dir link without -n: ${script}"
+    else
+        pass "config dir link uses -sfn: ${script}"
+    fi
+done
+
+# alacritty's installer only touches $HOME, so it is safe to run for real.
+TMP_HOME="$(mktemp -d)"
+NESTED_LINK="${REPO_DIR}/applications/alacritty/alacritty"
+if [ -e "$NESTED_LINK" ] || [ -L "$NESTED_LINK" ]; then
+    fail "alacritty: nested link already exists before test (${NESTED_LINK})"
+else
+    HOME="$TMP_HOME" bash "${REPO_DIR}/applications/alacritty/install.sh" >/dev/null
+    HOME="$TMP_HOME" bash "${REPO_DIR}/applications/alacritty/install.sh" >/dev/null
+    if [ -e "$NESTED_LINK" ] || [ -L "$NESTED_LINK" ]; then
+        fail "alacritty: re-run created nested link in repo"
+        rm -f "$NESTED_LINK"
+    else
+        pass "alacritty: re-run creates no nested link in repo"
+    fi
+    if [ "$(readlink "${TMP_HOME}/.config/alacritty")" = "${REPO_DIR}/applications/alacritty" ]; then
+        pass "alacritty: ~/.config/alacritty points to repo dir"
+    else
+        fail "alacritty: ~/.config/alacritty does not point to repo dir"
+    fi
+fi
+rm -rf "$TMP_HOME"
+
+# -----------------------------------------
+echo ""
 echo "=============================="
 echo "Results: ${PASS} passed, ${FAIL} failed"
 echo "=============================="

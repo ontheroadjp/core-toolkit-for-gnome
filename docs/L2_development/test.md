@@ -8,7 +8,7 @@ CI が存在しないため（`.github/` 不在を確認済み）、すべての
 
 | 種別 | 対象 | フレームワーク | 件数 |
 |---|---|---|---|
-| リポジトリ全体の構文・構成検証 | 全 `install.sh` / `install-all.sh` | 独自 pass/fail カウンタ（bash） | `tests/test_install.sh`: 5 テストスイート |
+| リポジトリ全体の構文・構成検証 | 全 `install.sh` / `install-all.sh` | 独自 pass/fail カウンタ（bash） | `tests/test_install.sh`: 6 テストスイート |
 | リポジトリ全体の構文チェック | 全 `install.sh` / `install-all.sh`（動的検出） | shellcheck（未導入時は `bash -n`） | `tests/lint_shell.sh`: 検出数に依存 |
 | ユニットテスト | `scripts/battery-alert/battery_alert.py` | Python `unittest` | 20件 |
 | ユニットテスト | `applications/mpv-player/mpv-player.py` | Python `unittest` | 31件 |
@@ -21,7 +21,7 @@ CI が存在しないため（`.github/` 不在を確認済み）、すべての
 bash tests/test_install.sh
 ```
 
-固定の `INSTALL_SCRIPTS` 配列（`tests/test_install.sh:13-22`）を対象に、以下5点を検証する:
+固定の `INSTALL_SCRIPTS` 配列（`tests/test_install.sh:13-22`）を対象に、以下6点を検証する:
 
 1. **構文チェック**（`test_install.sh:25-52`）: shellcheck があれば使用、なければ `bash -n`
 2. **参照ファイルの実在確認**（`test_install.sh:56-72`）: `mpv-player.py`, `espanso-toggle`,
@@ -38,8 +38,14 @@ bash tests/test_install.sh
    新スクリプト群でカバーされているか」を検証する後方互換テスト
 5. **`t480s-apps-install.sh` 削除確認**（`test_install.sh:128-135`）: `t480s/t480s-apps-install.sh`
    が存在しないことを確認する（リファクタリング完了の回帰防止）
+6. **設定ディレクトリのリンクが `ln -sfn` であることの確認**（`test_install.sh:138-182`）:
+   alacritty / espanso / yt-dlp / mpv-player の各 install.sh に
+   `ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` の行がないことを grep で静的に確認する。
+   加えて `applications/alacritty/install.sh` だけは一時 `HOME`（`mktemp -d`）で2回実行し、
+   repo 内に `applications/alacritty/alacritty` が作られないこと、`~/.config/alacritty` が
+   repo ディレクトリを指すことを確認する（issue #62 の自己参照リンクの回帰防止）
 
-終了コードは `[ "$FAIL" -eq 0 ]`（`test_install.sh:142`）。
+終了コードは `[ "$FAIL" -eq 0 ]`（`test_install.sh:189`）。
 
 ## 2. `tests/lint_shell.sh` — 全 install スクリプトの構文チェック
 
