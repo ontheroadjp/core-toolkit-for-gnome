@@ -36,6 +36,7 @@ echo ""
 echo "[3/${TOTAL}] Installing system monitor tools ..."
 sudo apt install -y \
     htop \
+    ncdu \
     nethogs \
     iftop \
     whois \
