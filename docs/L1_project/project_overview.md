@@ -13,7 +13,7 @@ Ubuntu 24.04 LTS / GNOME 環境を再現可能にするための
 |---|---|---|
 | 言語/ランタイム | POSIX sh / bash / Python 3 | `scripts/core-gnome-settings/apply-settings.sh:1` は `#!/bin/bash`、`gnome-extensions/gnome-overview-toggle/gnome-overview-toggle:1` は `#!/bin/sh`、`scripts/battery-alert/battery_alert.py` / `applications/mpv-player/mpv-player.py` は `#!/usr/bin/env python3` |
 | パッケージマネージャ（プロジェクト自体） | なし | `package.json` 等のマニフェスト不在を確認 |
-| OSパッケージマネージャ（実行対象） | apt（Ubuntu/Debian系） | `scripts/core-tools/install.sh:9,26,36,47` |
+| OSパッケージマネージャ（実行対象） | apt（Ubuntu/Debian系） | `scripts/core-tools/install.sh:9,26,37,49` |
 | CI | なし | `.github/` ディレクトリ不在を確認 |
 | テスト | 手動実行（unittest / bash） | `tests/test_install.sh`、`tests/lint_shell.sh`、各 `scripts/*/tests/`、`applications/mpv-player/tests/` |
 | 対象デスクトップ環境 | GNOME Shell | `scripts/core-gnome-settings/apply-settings.sh` の `org.gnome.*` schema、`gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` の `org.gnome.Shell` DBus 呼び出し |
@@ -41,11 +41,11 @@ OSディストリビューションは Ubuntu 24.04 LTS (Noble Numbat)。
 2. **開発・利用ツールのセットアップ** — `scripts/core-tools/install.sh`
    - 基本開発ツール一式の apt インストール（`core-tools/install.sh:9-20`）
    - システムユーティリティ（hyperfine, rclone, gocryptfs）の導入（`core-tools/install.sh:26-31`）
-   - システム監視ツール（htop, nethogs, iftop, whois, arp-scan）の導入（`core-tools/install.sh:36-42`）
-   - GNOME 拡張管理ツールの導入（`core-tools/install.sh:47-48`）
-   - `mise` 経由での Node.js 24 のセットアップ（`core-tools/install.sh:53-59`）
-   - `gh` (GitHub CLI) / `ghq` の条件付きインストール（`core-tools/install.sh:64-89`）
-   - Claude Code / OpenAI Codex CLI の条件付きインストール（`core-tools/install.sh:94-110`）
+   - システム監視ツール（htop, ncdu, nethogs, iftop, whois, arp-scan）の導入（`core-tools/install.sh:37-43`）
+   - GNOME 拡張管理ツールの導入（`core-tools/install.sh:49`）
+   - `mise` 経由での Node.js 24 のセットアップ（`core-tools/install.sh:83-90`）
+   - `gh` (GitHub CLI) / `ghq` の条件付きインストール（`core-tools/install.sh:94-120`）
+   - Claude Code / OpenAI Codex CLI の条件付きインストール（`core-tools/install.sh:124-141`）
 
 3. **dotfiles・アプリ設定の一括インストール** — `install-all.sh`（ルート）
    - `scripts/core-tools/install.sh` を呼び出し後、各 `applications/*/install.sh` を順に実行
