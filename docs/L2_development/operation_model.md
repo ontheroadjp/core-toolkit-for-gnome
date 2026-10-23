@@ -5,7 +5,7 @@ CI が存在しないため（`.github/` 不在を確認済み）、以下はす
 
 ## 前提
 
-- 対象OS: Ubuntu系（`apt` が使えること）。根拠: `scripts/core-tools/install.sh:9,26,36,47,64` が
+- 対象OS: Ubuntu系（`apt` が使えること）。根拠: `scripts/core-tools/install.sh:9,26,37,49,66` が
   すべて `sudo apt install` を呼んでいる。
 - 対象デスクトップ: GNOME Shell。根拠: `scripts/core-gnome-settings/apply-settings.sh` の `org.gnome.*` schema、
   `gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` の `org.gnome.Shell` DBus呼び出し。

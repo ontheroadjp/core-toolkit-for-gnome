@@ -53,13 +53,13 @@ DB・APIは存在しないため `database.md` / `api.md` は生成していな�
 - システムユーティリティ: `hyperfine rclone gocryptfs`
   (`core-tools/install.sh:26-29`)
   - `gpaste-2 gir1.2-gpaste-2` は `|| echo` で失敗を無視（`core-tools/install.sh:31`）
-- システム監視: `htop nethogs iftop whois arp-scan` (`core-tools/install.sh:36-42`)
-- GNOME 拡張管理: `gnome-shell-extension-manager` (`core-tools/install.sh:47-48`)
+- システム監視: `htop ncdu nethogs iftop whois arp-scan` (`core-tools/install.sh:37-43`)
+- GNOME 拡張管理: `gnome-shell-extension-manager` (`core-tools/install.sh:49`)
 - Docker Engine: Docker 公式 apt repository を登録し、
   `docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin` を導入
-  (`core-tools/install.sh:53-70`)
+  (`core-tools/install.sh:54-71`)
   - `docker` group がなければ作成し、`$USER` を追加する
-    (`core-tools/install.sh:71-77`)。反映にはログアウト/ログインまたは `newgrp docker` が必要。
+    (`core-tools/install.sh:72-78`)。反映にはログアウト/ログインまたは `newgrp docker` が必要。
 
 ### 条件付きインストール（`command -v` で存在確認）
 

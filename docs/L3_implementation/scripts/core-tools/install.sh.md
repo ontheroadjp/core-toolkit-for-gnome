@@ -47,5 +47,7 @@
 
 ## 変更履歴（git log より自動生成）
 
+- 4b20ff6 feat(#64): add ncdu to core-tools installer
+- 0aa4df2 chore(core-tools): mark install.sh as executable
 - cc53830 feat(#38): add docker to core tools installer
 - 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh
