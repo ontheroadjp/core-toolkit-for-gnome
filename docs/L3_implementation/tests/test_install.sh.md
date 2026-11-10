@@ -3,6 +3,7 @@
 ## 目的・役割
 
 `install-all.sh` と各 `install.sh` の構文・構成を検証する手動実行用テスト。
+Dolphin のインストーラーと一括インストールからの呼び出しも検証する。
 CI は存在しないため、変更時に `bash tests/test_install.sh` で実行する。
 独自の pass/fail カウンタを持ち、1件でも FAIL があれば終了コード 1 を返す（`test_install.sh:186-189`）。
 

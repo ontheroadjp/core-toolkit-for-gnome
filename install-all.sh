@@ -38,6 +38,11 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 "${REPO_DIR}/applications/chrome/install.sh"
 
 # ----------------------------------
+# dolphin
+# ----------------------------------
+"${REPO_DIR}/applications/dolphin/install.sh" || exit 1
+
+# ----------------------------------
 # settings > keyboard > custom shortcuts
 # ----------------------------------
 # Uncomment to install gnome-overview-toggle and register keyboard shortcut:
