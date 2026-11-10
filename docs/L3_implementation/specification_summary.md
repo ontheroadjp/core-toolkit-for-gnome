@@ -33,14 +33,14 @@ DB・APIは存在しないため `database.md` / `api.md` は生成していな�
 
 ## 1a. `scripts/core-t480s-settings/apply-settings.sh` — ThinkPad 固有設定スクリプト
 
-`thinkpad_acpi` カーネルモジュールが提供する sysfs 属性への書き込みのみ。`sudo` 必須。
+TLP の設定を更新し、サービスを有効化して適用する。TLP と `sudo` が必要。
 
-| 対象パス | 値 | 行 |
+| TLP 設定 | 値 | 行 |
 |---|---|---|
-| `/sys/class/power_supply/BAT0/charge_start_threshold` | `30` | `apply-settings.sh:8` |
-| `/sys/class/power_supply/BAT0/charge_stop_threshold` | `85` | `apply-settings.sh:9` |
+| `START_CHARGE_THRESH_BAT0` | `70` | `apply-settings.sh:23` |
+| `STOP_CHARGE_THRESH_BAT0` | `85` | `apply-settings.sh:24` |
 
-設定は再起動後にリセットされる。永続化手順（`tlp` 利用）はコメントアウト（`apply-settings.sh:12-19`）。
+設定は TLP により再起動後も適用される。
 
 ## 2. `scripts/core-tools/install.sh` — 汎用ツール導入スクリプト
 

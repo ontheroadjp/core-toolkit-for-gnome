@@ -12,7 +12,7 @@ Ubuntu / GNOME が動作する環境であれば機種を問わず利用でき�
   キーリピート、入力ソース切り替え、ウィンドウ/ワークスペース切替キーバインド、
   フォントレンダリング）を `gsettings` で一括適用。機種を問わず利用可能。
 - `scripts/core-t480s-settings/apply-settings.sh` — ThinkPad 固有のバッテリー充電閾値を
-  `/sys/class/power_supply/BAT0/` 経由で設定（`thinkpad_acpi` カーネルモジュール必須）。
+  TLP で永続設定（`thinkpad_acpi` と TLP 必須）。
 - `scripts/core-tools/install.sh` — 汎用CLIツール一式（git, gh, tmux, fzf, bat,
   gocryptfs, Docker Engine, mise+Node.js, ghq, Claude Code, Codex CLI 等）を `apt` および
   各公式インストーラ経由で導入。各アプリ固有のインストールは
@@ -127,9 +127,8 @@ Alacritty の配色テーマを切り替えるには、
 
 - Alacritty の配色テーマは `.config/alacritty/theme/*.toml` に3種類用意されており、
   `alacritty.toml` の `import` 行で切り替える（GUIやコマンドでの切り替え機構はない）。
-- バッテリー充電のしきい値（`scripts/core-t480s-settings/apply-settings.sh` 内、30%/85%）は
-  T480s の `/sys/class/power_supply/BAT0/*` を直接書き換える。再起動後も
-  永続化したい場合は `tlp` の利用が必要（`core-t480s-settings/apply-settings.sh` 末尾のコメント参照）。
+- バッテリー充電のしきい値は `scripts/core-t480s-settings/apply-settings.sh` で
+  TLP に開始 70%・停止 85% として設定し、再起動後も適用する。
 - バッテリー低下通知（`scripts/battery-alert/`）のしきい値・ポーリング間隔は
   `.env` で設定する（詳細は `scripts/battery-alert/README.md` 参照）。
 - mpv music/video launcher（`applications/mpv-player/`）は playlist を
