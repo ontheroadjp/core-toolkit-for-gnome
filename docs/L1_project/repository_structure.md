@@ -108,11 +108,8 @@ GNOME のアニメーション・キーボード・キーバインド・ワー�
 `sudo` 不要、機種を問わず利用可能。
 
 ### `scripts/core-t480s-settings/apply-settings.sh`
-ThinkPad 固有の sysfs 属性（`/sys/class/power_supply/BAT0/charge_start_threshold`・
-`charge_stop_threshold`）へ `sudo tee` で充電閾値を書き込む（`apply-settings.sh:8-9`）。
-`thinkpad_acpi` カーネルモジュールが提供するため ThinkPad 専用。再起動後は設定がリセットされる。
-末尾のコメント（`apply-settings.sh:12-19`）に `tlp` を使った永続化手順がメモされているが、
-実行コードではない（コメントアウト済み）。
+TLP の設定ファイルへ充電開始 70%・停止 85% を設定し、サービスを有効化して適用する
+（`apply-settings.sh:5-32`）。TLP と ThinkPad の充電閾値対応が必要。
 
 ### `applications/alacritty/`
 `install.sh` が `~/.config/alacritty` → このディレクトリへのシンボリックリンクを作成する。

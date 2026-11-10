@@ -46,10 +46,8 @@ ThinkPad T480s 固有のバッテリー充電閾値を設定する場合は別�
 ./scripts/core-t480s-settings/apply-settings.sh
 ```
 
-- `thinkpad_acpi` が提供する `/sys/class/power_supply/BAT0/charge_*_threshold` へ書き込む。
-  T480s 以外の機種では当該 sysfs 属性が存在しないため失敗する。
-- 設定は再起動後にリセットされる。永続化には `tlp` が必要
-  （`apply-settings.sh:12-19` のコメント参照。実行コードではない）。
+- TLP の設定に開始 70%・停止 85% を書き込み、サービスを有効化して適用する。
+  TLP と ThinkPad の充電閾値対応が必要（`apply-settings.sh:5-32`）。
 
 ## 3. dotfiles・アプリ設定のインストール
 
