@@ -17,6 +17,7 @@ CI は存在しないため、変更時に `bash tests/test_install.sh` で実�
 | 4 | 旧 `t480s-apps-install.sh` が導入していたツールが新スクリプト群でカバーされていることを確認 | `test_install.sh:98-125` |
 | 5 | 旧 `t480s-apps-install.sh` が削除済みであることを確認 | `test_install.sh:127-136` |
 | 6 | 設定ディレクトリへのリンクが `ln -sfn` であることの静的確認と、alacritty installer の再実行で repo 内にリンクが作られないことの動作確認 | `test_install.sh:138-182` |
+| 7 | スタブを使い、成功・失敗の表示、失敗後の継続、終了コードを確認 | `test_install.sh` の Test 7 |
 
 ## 重要な設計判断
 
@@ -40,13 +41,14 @@ yt-dlp, mpv-player）は `^ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` に一致す�
 
 ## 注意事項・既知の制限
 
-- 機能テストではなく構文・構成の検証が中心。Test 6 の動作確認のみ実際に installer を実行する
+- 構文・構成の検証が中心。Test 6 は alacritty installer を一時 HOME で実行し、Test 7 は個別 installer をスタブに置き換える
 - Test 6 の動作確認は、開始時点で `applications/alacritty/alacritty` が既に存在すると FAIL として扱い、
   実行をスキップする（既存のリンクを誤ってテスト結果とみなさないため）
 
 ## 変更履歴（git log より自動生成）
 
-- 588948d feat(#75): configure dolphin xwayland launch
+- 19a3c13 fix(#77): report installation results as steps finish
+- 1b4144a feat(#75): configure dolphin xwayland launch (#76)
 - 94ba59c feat(#64): add ncdu to core-tools installer (#65)
 - 29d3a4c fix(#62): use ln -sfn for config directory links to stop self-referencing links (#63)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)
