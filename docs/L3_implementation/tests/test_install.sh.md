@@ -47,7 +47,8 @@ yt-dlp, mpv-player）は `^ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` に一致す�
 
 ## 変更履歴（git log より自動生成）
 
-- 588948d feat(#75): configure dolphin xwayland launch
+- 19a3c13 fix(#77): report installation results as steps finish
+- 1b4144a feat(#75): configure dolphin xwayland launch (#76)
 - 94ba59c feat(#64): add ncdu to core-tools installer (#65)
 - 29d3a4c fix(#62): use ln -sfn for config directory links to stop self-referencing links (#63)
 - f4d961c Sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup (#48)

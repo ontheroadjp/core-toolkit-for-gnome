@@ -10,5 +10,6 @@
 
 ## 変更履歴（git log より自動生成）
 
-- 588948d feat(#75): configure dolphin xwayland launch
+- 19a3c13 fix(#77): report installation results as steps finish
+- 1b4144a feat(#75): configure dolphin xwayland launch (#76)
 - d3f2eab chore: rename install.sh to install-all.sh and add manual steps for settings scripts
