@@ -42,8 +42,6 @@ yt-dlp, mpv-player）は `^ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` に一致す�
 - 機能テストではなく構文・構成の検証が中心。Test 6 の動作確認のみ実際に installer を実行する
 - Test 6 の動作確認は、開始時点で `applications/alacritty/alacritty` が既に存在すると FAIL として扱い、
   実行をスキップする（既存のリンクを誤ってテスト結果とみなさないため）
-- 2026-10-20 時点で `scripts/core-tools/install.sh` が shellcheck SC1091（`. /etc/os-release`、info）で
-  Test 1 を FAIL させており、全体の終了コードは 1 になる（本テストの変更とは無関係）
 
 ## 変更履歴（git log より自動生成）
 

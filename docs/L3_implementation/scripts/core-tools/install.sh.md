@@ -26,7 +26,7 @@
 
 - `set -eu`（`-C` は使わない）: apt や wget の出力はリダイレクトしないため noclobber 不要
 - apt 系（[1][2][3][4][5]）は存在チェックなし — `apt install` の冪等性に委ねる
-- Docker は Ubuntu の公式 apt repository を deb822 形式で登録する。`/etc/os-release` の `UBUNTU_CODENAME` を優先し、未定義なら `VERSION_CODENAME` を使う（`install.sh:59-64`）
+- Docker は Ubuntu の公式 apt repository を deb822 形式で登録する。対象システムの os-release から `UBUNTU_CODENAME` を優先し、未定義なら `VERSION_CODENAME` を使う。実行環境に存在するファイルのため、読み込み行に限り ShellCheck の SC1091 を抑制する（`install.sh:59-65`）
 - Docker の sudo なし実行設定は `docker` group の存在確認後に `sudo usermod -aG docker "$USER"` を実行する（`install.sh:72-75`）。反映にはログアウト/ログインまたは `newgrp docker` が必要であることを表示する（`install.sh:76-78`）
 - curl/wget 系（[7][8][9][10]）は `command -v` で存在確認し、インストール済みはスキップ
 - mise の MISE_BIN 解決: [6] でインストール直後は PATH に入らないため `${HOME}/.local/bin/mise` を明示。[10] でも同様に再解決する（`install.sh:136`）
@@ -47,7 +47,8 @@
 
 ## 変更履歴（git log より自動生成）
 
-- 4b20ff6 feat(#64): add ncdu to core-tools installer
+- ee72e39 fix(#68): resolve shellcheck warning for os-release
+- 94ba59c feat(#64): add ncdu to core-tools installer (#65)
 - 0aa4df2 chore(core-tools): mark install.sh as executable
 - cc53830 feat(#38): add docker to core tools installer
 - 6b93fec chore(#31): replace t480s-apps-install.sh with per-app install.sh and scripts/core-tools/install.sh

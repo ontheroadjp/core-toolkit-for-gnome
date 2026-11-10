@@ -56,6 +56,7 @@ DOCKER_USER="${USER:?USER environment variable is not set}"
 sudo install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
 sudo chmod a+r /etc/apt/keyrings/docker.asc
+# shellcheck disable=SC1091  # os-release is supplied by the target system at runtime
 . /etc/os-release
 echo "Types: deb
 URIs: https://download.docker.com/linux/ubuntu
