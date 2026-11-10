@@ -8,7 +8,7 @@ metadata:
 ## 目的・役割
 
 keyd のシステム全体キーマップ定義。ホームポジション改善（CapsLock/Ctrl 入替）、
-ThinkPad 系トラックポイント周辺キーの矢印化、GNOME タイリング用ファンクション
+GNOME タイリング用ファンクション
 キー割り当てに加え、Mozc 入力中の Vim 風エスケープコンボ（`kj`）と、Ctrl+Space
 を Scroll_Lock（+ 80ms後の合成 Ctrl タップ）に変換する fep-toggle 用 remap を
 提供する（`default.conf:1-34`）。Ctrl+Space remap は Shift の有無を区別しないため、
@@ -18,8 +18,7 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 動作概要
 
-- `[main]` で CapsLock→LeftCtrl、LeftCtrl→LeftMeta、PageUp/PageDown→矢印、
-  F1-F3→GNOME タイリングショートカットを定義する（`default.conf:4-15`）。
+- `[main]` で CapsLock→LeftCtrl、LeftCtrl→LeftMeta、F1-F3→GNOME タイリングショートカットを定義する。PageUp/PageDown の矢印への割り当てはコメントアウトされており有効ではない（`default.conf:4-15`）。
 - `[after_k]` レイヤーで `j = macro(esc esc esc)` を定義する
   （`default.conf:17-18`）。このレイヤーは `k` に `oneshotk(after_k, k)` が
   バインドされている場合にのみ、`k` の直後の1打鍵で発火する。
