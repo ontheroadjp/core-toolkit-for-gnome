@@ -5,7 +5,9 @@ DB・APIは存在しないため `database.md` / `api.md` は生成していな�
 
 ## 1. `scripts/core-gnome-settings/apply-settings.sh` — GNOME 設定スクリプト
 
-全行 `gsettings set/reset <schema> <key> <value>` の形式。機種不問・`sudo` 不要。設定一覧:
+機種不問の GNOME 設定を適用する。Mozc の IBus 設定を更新し、起動時の入力モードを
+ひらがなにする（`apply-settings.sh:3-25`）。以下の `gsettings` 設定に加え、
+入力切替のカスタムキーバインドと sudoers ルールを登録する。設定一覧:
 
 | schema.key | 値 | 行 |
 |---|---|---|
@@ -155,6 +157,7 @@ GNOME 入力ソースの切替を「コア D-Bus サービス」と「イベン�
 | 項目 | 内容 | 根拠 |
 |---|---|---|
 | 役割 | D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher` を公開し、入力ソース切替と keyd の `k` バインド同期を行う | `fep-switcher/extension.js` |
+| 有効化時 | GNOME の入力履歴で US を先頭にし、US 入力を有効化する | `fep-switcher/extension.js:16-29` |
 | メソッド | `SwitchToUs()`: xkb:us を activate / `SwitchToJa()`: ibus:mozc-jp を activate。いずれも直後に `_syncKeyd()` を呼び、`sudo -n /usr/local/bin/fep-toggle --keyd-us\|--keyd-mozc` で keyd の `k` バインド（Mozc 時のみ有効な `kj`→Escape コンボ）を同期する | `fep-switcher/extension.js:41-75` |
 | インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/fep-switcher@local` へ symlink 作成 | `install-all.sh:49-51` |
 

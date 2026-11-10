@@ -1,4 +1,5 @@
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Keyboard from 'resource:///org/gnome/shell/ui/status/keyboard.js';
@@ -14,6 +15,18 @@ const DBUS_IFACE = `
 export default class FepSwitcherExtension extends Extension {
     enable() {
         this._inputSourceManager = Keyboard.getInputSourceManager();
+
+        // GNOME restores the most recently used source at login. Put US first
+        // before IBus becomes ready, then activate it for this session.
+        const settings = new Gio.Settings({schema_id: 'org.gnome.desktop.input-sources'});
+        const sources = settings.get_value('mru-sources').deep_unpack();
+        const configured = settings.get_value('sources').deep_unpack();
+        const us = configured.find(([type, id]) => type === 'xkb' && id === 'us');
+        if (us) {
+            const ordered = [us, ...sources.filter(([type, id]) => type !== 'xkb' || id !== 'us')];
+            settings.set_value('mru-sources', new GLib.Variant('a(ss)', ordered));
+        }
+        this.SwitchToUs();
 
         this._dbusImpl = Gio.DBusExportedObject.wrapJSObject(DBUS_IFACE, this);
         this._dbusImpl.export(Gio.DBus.session, '/org/gnome/Shell/Extensions/FepSwitcher');
