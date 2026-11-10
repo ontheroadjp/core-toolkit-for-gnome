@@ -8,8 +8,8 @@ keyd を使ったキーボードリマップ設定。`install.sh` が keyd 本�
 |---|---|---|
 | `CapsLock` | `Left Ctrl` | ホームポジションでの Ctrl 操作 |
 | `Left Ctrl` | `Left Meta` (Super) | GNOME キーバインドと干渉しないよう移動 |
-| `PageUp` | `←` | ThinkPad トラックポイント周辺キーを矢印に |
-| `PageDown` | `→` | 同上 |
+| `PageUp` | 変更なし | 左矢印への割り当てはコメントアウト |
+| `PageDown` | 変更なし | 右矢印への割り当てはコメントアウト |
 | `F1` | `Meta+↑`（ウィンドウ最大化） | GNOME タイリング操作 |
 | `F2` | `Meta+←`（左半画面） | GNOME タイリング操作 |
 | `F3` | `Meta+→`（右半画面） | GNOME タイリング操作 |
