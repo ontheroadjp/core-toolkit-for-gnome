@@ -1,58 +1,32 @@
 # ポリシー
 
-## 技術選定ポリシー
+## 技術選定
 
-- シェルスクリプト（bash / sh）を主体とし、一部 Python を使用する。
-  専用の言語ビルドツール・プロジェクトレベルのパッケージマネージャは導入しない。
-  根拠: リポジトリ直下に `package.json` / `go.mod` / `Gemfile` /
-  `requirements.txt` / `Cargo.toml` のいずれも存在しないことを確認済み。
-  Python は `scripts/battery-alert/battery_alert.py`、`applications/mpv-player/mpv-player.py`
-  のみで使用し、標準ライブラリのみに依存する（外部 pip パッケージなし）。
-- マシン設定は GNOME 標準の `gsettings` コマンドで行い、独自の設定DBや
-  ラッパーツールは作らない。根拠: `scripts/core-gnome-settings/apply-settings.sh` の全 `gsettings` 行
-  （`apply-settings.sh:6,14-16,21,27-30,35-38,43,50-51`）。
-- パッケージ導入は OS 標準の `apt` を第一手段とし、`apt` に存在しないものは
-  各ツール公式のインストール手順（`curl | sh`, `wget` + `dpkg`,
-  `npm install -g` 等）を個別に踏む。根拠: `scripts/core-tools/install.sh:9-20`（apt）、
-  `scripts/core-tools/install.sh:56`（mise インストール用 curl）、
-  `scripts/core-tools/install.sh:96`（Claude Code インストール用 curl）、
-  `scripts/core-tools/install.sh:107`（codex は npm 経由）。
-- 設定ファイル（`applications/*/`、`gnome-extensions/*/`）はホームディレクトリの
-  対応パスへシンボリックリンクとして配置する運用。根拠: 各 `applications/*/install.sh`
-  が `ln -sf` でシンボリックリンクを作成する実装（例: `applications/alacritty/install.sh`）。
-- アプリのパッケージインストールと設定ファイルの配置を分離する。
-  汎用ツールのインストールは `scripts/core-tools/install.sh`、
-  アプリ固有のインストールは各 `applications/*/install.sh` が担う。
-  根拠: `install-all.sh`（ルート）の構成から実装を確認。
+- シェルスクリプトを主体とし、必要に応じて Python を使用する。
+- 専用のビルドツールやプロジェクトレベルのパッケージマネージャは
+  導入しない。
+- GNOME の設定には標準の仕組みを使い、
+  独自の設定データベースやラッパーツールは作らない。
+- パッケージの導入は OS 標準の手段を優先する。
+  それが利用できない場合は、提供元の公式手順を用いる。
+- 管理する設定ファイルは、対応する利用先へシンボリックリンクで配置する。
+- 汎用ツールの導入と、アプリケーション固有の導入・設定を分離する。
 
-## セキュリティ方針
+## セキュリティ
 
-- 公開リポジトリを想定する場合、認証情報・トークン・個人を特定できる
-  情報をスクリプトや設定ファイルに直接書かないこと。
-  現時点のスクリプト・設定ファイルを確認した範囲では、
-  認証情報のハードコードは検出されなかった（`scripts/core-gnome-settings/apply-settings.sh`、
-  `scripts/core-t480s-settings/apply-settings.sh`、`scripts/core-tools/install.sh`、
-  `applications/alacritty/alacritty.toml`、
-  `gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` を確認済み）。
-- `curl | sh` / `wget | sudo tee` 形式のリモートスクリプト実行
-  （`scripts/core-tools/install.sh:56,67-71,96`）は、実行前にURLの出典を
-  都度確認すること。これらは公式インストーラを利用しているが、リポジトリとして
-  ピン留め（チェックサム検証等）は行っていない（未対応・未確認の改善余地）。
-- `applications/espanso/match/private.yml` はメールアドレス等の個人情報を含むため
-  `.gitignore` で除外する（`applications/espanso/match/private.yml.example` から
-  コピーして作成する運用）。
+- 認証情報、トークン、個人情報を公開対象のスクリプトや設定ファイルに
+  直接記載しない。
+- リモートから取得するインストーラや鍵は、利用前に出典を確認する。
+- sudoers を自動変更する実装は、ユーザーの明示的な承認なしに
+  追加・変更しない。変更が必要な場合は、必要性と付与する権限の範囲を
+  個別に検討して提案する。
 
-## パフォーマンス要件
+## 運用
 
-特になし。セットアップスクリプトであり、実行頻度は
-低い（マシン初期化時、または設定変更時のみ）。
+- Git のステージングでは変更対象のファイルを個別に指定し、
+  `git add -A` や `git add .` による無差別なステージングを行わない。
 
-## 禁止事項
+## 対象外
 
-- このリポジトリにアプリケーションロジック（DB、API、フロントエンド等）を
-  混在させない。スコープはデスクトップ環境設定とセットアップ手順に限定する。
-- `git add -A` / `git add .` のような無差別なステージングを行わない
-  （CLAUDE.md のコミット運用ルールより）。
-
-- sudoers を自動変更する実装は、ユーザーの明示的な承認なしに追加・変更しない。AI は変更の必要性と付与する権限の範囲を個別に検討し、必要な場合はユーザーに提案する。
-  根拠: `docs/L3_implementation/scripts/core-gnome-settings/apply-settings.sh.md` の「動作概要」および「重要な設計判断」。
+- データベース、API、フロントエンドなどのアプリケーションロジックを
+  このリポジトリに混在させない。
