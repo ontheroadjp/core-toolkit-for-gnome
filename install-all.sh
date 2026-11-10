@@ -18,7 +18,20 @@ run_step() {
 install_extension() {
     local name="$1" source="$2"
     local target="${HOME}/.local/share/gnome-shell/extensions/${name}"
-    rm -rf "$target" && ln -sf "$source" "$target" && gnome-extensions enable "$name"
+    if [ -e "$target" ] || [ -L "$target" ]; then
+        if [ ! -L "$target" ] || [ "$(readlink "$target")" != "$source" ]; then
+            echo "Existing extension preserved: $target" >&2
+            return 1
+        fi
+    else
+        mkdir -p "${HOME}/.local/share/gnome-shell/extensions" && ln -s "$source" "$target" || return 1
+    fi
+    gnome-extensions enable "$name"
+}
+
+# shellcheck disable=SC2317  # Invoked indirectly by run_step.
+install_tmux_helper() {
+    mkdir -p "${HOME}/.local/bin" && ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.local/bin/switch-input-to-us"
 }
 
 # ----------------------------------
@@ -80,7 +93,7 @@ run_step "app-switch-us-input" install_extension "app-switch-us-input@local" "${
 # ----------------------------------
 # tmux-switch-us-input
 # ----------------------------------
-run_step "tmux-switch-us-input" ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.local/bin/switch-input-to-us"
+run_step "tmux-switch-us-input" install_tmux_helper
 
 # ----------------------------------
 # Manual steps
@@ -89,7 +102,7 @@ printf '\033[0;36m'
 cat <<'EOF'
 
 === Manual step: scripts/core-gnome-settings ===
-Run the following to apply GNOME settings (machine-agnostic, no sudo required):
+Run the following to apply GNOME settings (machine-agnostic, uses sudo):
 
   scripts/core-gnome-settings/apply-settings.sh
 

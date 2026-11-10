@@ -18,6 +18,7 @@ CI は存在しないため、変更時に `bash tests/test_install.sh` で実�
 | 5 | 旧 `t480s-apps-install.sh` が削除済みであることを確認 | `test_install.sh:127-136` |
 | 6 | 設定ディレクトリへのリンクが `ln -sfn` であることの静的確認と、alacritty installer の再実行で repo 内にリンクが作られないことの動作確認 | `test_install.sh:138-182` |
 | 7 | スタブを使い、成功・失敗の表示、失敗後の継続、終了コードを確認 | `test_install.sh` の Test 7 |
+| 8–10 | アプリ設定・keyd の既存設定保護と再実行、core-tools の apt・ダウンロード失敗をスタブで確認 | `tests/test_install.sh` の Test 8–10 |
 
 ## 重要な設計判断
 
@@ -41,7 +42,7 @@ yt-dlp, mpv-player）は `^ln -sf "${SCRIPT_DIR}" "${CONFIG_DIR}/` に一致す�
 
 ## 注意事項・既知の制限
 
-- 構文・構成の検証が中心。Test 6 は alacritty installer を一時 HOME で実行し、Test 7 は個別 installer をスタブに置き換える
+- Test 6 は alacritty installer を一時 HOME で実行する。Test 7–10 はスタブと一時ディレクトリを使い、システム設定の変更やパッケージ導入を行わない
 - Test 6 の動作確認は、開始時点で `applications/alacritty/alacritty` が既に存在すると FAIL として扱い、
   実行をスキップする（既存のリンクを誤ってテスト結果とみなさないため）
 

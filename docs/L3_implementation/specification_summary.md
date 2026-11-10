@@ -11,24 +11,24 @@ DB・APIは存在しないため `database.md` / `api.md` は生成していな�
 
 | schema.key | 値 | 行 |
 |---|---|---|
-| `org.gnome.desktop.interface enable-animations` | `true` | `apply-settings.sh:6` |
-| `org.gnome.desktop.peripherals.keyboard repeat` | `true` | `apply-settings.sh:14` |
-| `org.gnome.desktop.peripherals.keyboard delay` | `180` | `apply-settings.sh:15` |
-| `org.gnome.desktop.peripherals.keyboard repeat-interval` | `10` | `apply-settings.sh:16` |
-| `org.gnome.desktop.wm.keybindings switch-input-source` | `['<Control>space']` | `apply-settings.sh:21` |
-| `org.gnome.desktop.wm.keybindings switch-windows` | `['<Alt>Tab', '<Control>Tab']` | `apply-settings.sh:27` |
-| `org.gnome.desktop.wm.keybindings switch-windows-backward` | `['<Shift><Alt>Tab', '<Shift><Control>Tab']` | `apply-settings.sh:28` |
-| `org.gnome.desktop.wm.keybindings switch-panels` | reset (default) | `apply-settings.sh:29` |
-| `org.gnome.desktop.wm.keybindings switch-panels-backward` | reset (default) | `apply-settings.sh:30` |
-| `org.gnome.desktop.wm.keybindings switch-to-workspace-1` | `['<Control>1']` | `apply-settings.sh:35` |
-| `org.gnome.desktop.wm.keybindings switch-to-workspace-2` | `['<Control>2']` | `apply-settings.sh:36` |
-| `org.gnome.desktop.wm.keybindings switch-to-workspace-3` | `['<Control>3']` | `apply-settings.sh:37` |
-| `org.gnome.desktop.wm.keybindings switch-to-workspace-4` | `['<Control>4']` | `apply-settings.sh:38` |
-| `org.gnome.desktop.wm.preferences mouse-button-modifier` | `'<Ctrl>'` | `apply-settings.sh:43` |
-| `org.gnome.desktop.interface font-hinting` | `'full'` | `apply-settings.sh:50` |
-| `org.gnome.desktop.interface font-antialiasing` | `'grayscale'` | `apply-settings.sh:51` |
+| `org.gnome.desktop.interface enable-animations` | `true` | `apply-settings.sh:30` |
+| `org.gnome.desktop.peripherals.keyboard repeat` | `true` | `apply-settings.sh:38` |
+| `org.gnome.desktop.peripherals.keyboard delay` | `180` | `apply-settings.sh:39` |
+| `org.gnome.desktop.peripherals.keyboard repeat-interval` | `10` | `apply-settings.sh:40` |
+| `org.gnome.desktop.wm.keybindings switch-input-source` | reset (default); fep-toggle はカスタムキーで登録 | `apply-settings.sh:43-47,89-129` |
+| `org.gnome.desktop.wm.keybindings switch-windows` | `['<Alt>Tab', '<Control>Tab']` | `apply-settings.sh:53` |
+| `org.gnome.desktop.wm.keybindings switch-windows-backward` | `['<Shift><Alt>Tab', '<Shift><Control>Tab']` | `apply-settings.sh:54` |
+| `org.gnome.desktop.wm.keybindings switch-panels` | reset (default) | `apply-settings.sh:55` |
+| `org.gnome.desktop.wm.keybindings switch-panels-backward` | reset (default) | `apply-settings.sh:56` |
+| `org.gnome.desktop.wm.keybindings switch-to-workspace-1` | `['<Control>1']` | `apply-settings.sh:61` |
+| `org.gnome.desktop.wm.keybindings switch-to-workspace-2` | `['<Control>2']` | `apply-settings.sh:62` |
+| `org.gnome.desktop.wm.keybindings switch-to-workspace-3` | `['<Control>3']` | `apply-settings.sh:63` |
+| `org.gnome.desktop.wm.keybindings switch-to-workspace-4` | `['<Control>4']` | `apply-settings.sh:64` |
+| `org.gnome.desktop.wm.preferences mouse-button-modifier` | `'<Ctrl>'` | `apply-settings.sh:69` |
+| `org.gnome.desktop.interface font-hinting` | `'full'` | `apply-settings.sh:76` |
+| `org.gnome.desktop.interface font-antialiasing` | `'grayscale'` | `apply-settings.sh:77` |
 
-コメントアウトされた未採用候補（`apply-settings.sh:47-48`）も
+コメントアウトされた未採用候補（`apply-settings.sh:73-74`）も
 ファイル内に残されている（フォント設定の別値）。
 
 ## 1a. `scripts/core-t480s-settings/apply-settings.sh` — ThinkPad 固有設定スクリプト
@@ -51,17 +51,17 @@ TLP の設定を更新し、サービスを有効化して適用する。TLP と
 ### apt 経由（存在チェックなし、無条件実行）
 
 - 開発基盤: `build-essential curl unzip tree git tmux fzf bat vim-gtk3 jq yq`
-  (`core-tools/install.sh:9-20`)
+  (`scripts/core-tools/install.sh:9-21`)
 - システムユーティリティ: `hyperfine rclone gocryptfs`
-  (`core-tools/install.sh:26-29`)
-  - `gpaste-2 gir1.2-gpaste-2` は `|| echo` で失敗を無視（`core-tools/install.sh:31`）
-- システム監視: `htop ncdu nethogs iftop whois arp-scan` (`core-tools/install.sh:37-43`)
-- GNOME 拡張管理: `gnome-shell-extension-manager` (`core-tools/install.sh:49`)
+  (`scripts/core-tools/install.sh:27-30`)
+  - `gpaste-2 gir1.2-gpaste-2` は `|| echo` で失敗を無視（`scripts/core-tools/install.sh:32`）
+- システム監視: `htop ncdu nethogs iftop whois arp-scan` (`scripts/core-tools/install.sh:38-44`)
+- GNOME 拡張管理: `gnome-shell-extension-manager` (`scripts/core-tools/install.sh:50`)
 - Docker Engine: Docker 公式 apt repository を登録し、
   `docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin` を導入
-  (`core-tools/install.sh:54-71`)
+  (`scripts/core-tools/install.sh:55-73`)
   - `docker` group がなければ作成し、`$USER` を追加する
-    (`core-tools/install.sh:72-78`)。反映にはログアウト/ログインまたは `newgrp docker` が必要。
+    (`scripts/core-tools/install.sh:74-79`)。反映にはログアウト/ログインまたは `newgrp docker` が必要。
 
 ### 条件付きインストール（`command -v` で存在確認）
 
@@ -159,7 +159,7 @@ GNOME 入力ソースの切替を「コア D-Bus サービス」と「イベン�
 | 役割 | D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher` を公開し、入力ソース切替と keyd の `k` バインド同期を行う | `fep-switcher/extension.js` |
 | 有効化時 | GNOME の入力履歴で US を先頭にし、US 入力を有効化する | `fep-switcher/extension.js:16-29` |
 | メソッド | `SwitchToUs()`: xkb:us を activate / `SwitchToJa()`: ibus:mozc-jp を activate。いずれも直後に `_syncKeyd()` を呼び、`sudo -n /usr/local/bin/fep-toggle --keyd-us\|--keyd-mozc` で keyd の `k` バインド（Mozc 時のみ有効な `kj`→Escape コンボ）を同期する | `fep-switcher/extension.js:41-75` |
-| インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/fep-switcher@local` へ symlink 作成 | `install-all.sh:49-51` |
+| インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/fep-switcher@local` へ symlink 作成 | `install-all.sh:18-29,86` |
 
 ### `scripts/app-switch-us-input/` — ウィンドウフォーカスクライアント
 
@@ -167,7 +167,7 @@ GNOME 入力ソースの切替を「コア D-Bus サービス」と「イベン�
 |---|---|---|
 | 役割 | `notify::focus-window` を監視し端末アプリへのフォーカス時に `SwitchToUs()` を呼ぶ | `app-switch-us-input/extension.js` |
 | 呼び出し方法 | `Gio.DBus.session.call()` で `fep-switcher@local` の `SwitchToUs()` を呼び出す | `app-switch-us-input/extension.js:72-79` |
-| インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/app-switch-us-input@local` へ symlink 作成 | `install-all.sh:55-58` |
+| インストール | ルート `install-all.sh` が `~/.local/share/gnome-shell/extensions/app-switch-us-input@local` へ symlink 作成 | `install-all.sh:18-29,91` |
 
 ### `scripts/tmux-switch-us-input/` — tmux pane クライアント
 
@@ -176,7 +176,7 @@ GNOME 入力ソースの切替を「コア D-Bus サービス」と「イベン�
 | 役割 | tmux `after-select-pane` フックから `SwitchToUs()` を呼ぶ bash スクリプト | `switch-input-to-us` |
 | 呼び出し方法 | `gdbus call` で `fep-switcher@local` の `SwitchToUs()` を呼び出す | `switch-input-to-us:3-7` |
 | エラー処理 | `>/dev/null 2>&1` で stdout/stderr を抑制（拡張無効時も静かに失敗） | `switch-input-to-us:7` |
-| インストール | ルート `install-all.sh` が `~/.local/bin/switch-input-to-us` へ symlink 作成 | `install-all.sh:62-63` |
+| インストール | ルート `install-all.sh` が `~/.local/bin/switch-input-to-us` へ symlink 作成 | `install-all.sh:33-35,96` |
 | tmux 連携 | `~/.tmux.conf` に `set-hook -g after-select-pane 'run-shell "switch-input-to-us"'` をユーザーが手動追記 | `install-all.sh` の Manual steps 表示 |
 
 ### `scripts/vim-switch-us-input/` — Vim Insert mode クライアント
@@ -229,7 +229,7 @@ Ubuntu 24.04 / GNOME (Wayland) での Typinator 相当のテキスト展開。
 | 起動オプション | `--remote-debugging-port=9222`、`--user-data-dir=~/.config/google-chrome-cdp`、`--class=google-chrome-cdp` を付与して `google-chrome-stable` を起動 | `google-chrome-cdp:6-10` |
 | デスクトップ分離 | `CHROME_DESKTOP=google-chrome-cdp.desktop` を export し、通常の Chrome デスクトップエントリと区別する | `google-chrome-cdp:5` |
 | インストール | 未インストール時は `wget` で `.deb` を取得し `sudo apt install` する。`~/.local/bin/google-chrome-cdp`・`~/.local/share/applications/google-chrome-cdp.desktop` へシンボリックリンクを作成 | `install.sh:8-13,26-27` |
-| 呼び出し元 | ルート `install-all.sh:38` から自動実行される | `install-all.sh:38` |
+| 呼び出し元 | ルート `install-all.sh:70` から自動実行される | `install-all.sh:70` |
 | テスト | `tests/test_install.sh:20,65-66,85,107` で install.sh の構文・参照ファイルを検証（機能テストではない） | ファイル内容確認済み |
 
 ## Dolphin — XWayland 起動

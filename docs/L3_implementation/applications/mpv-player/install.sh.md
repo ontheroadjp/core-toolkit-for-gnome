@@ -3,14 +3,16 @@
 ## 目的・役割
 
 `mpv-player.py` を `~/.local/bin/mpv-player` に配置し、必要な apt パッケージ
-（`ffmpeg`, `mpv`）を導入するインストーラ。`sudo` を要する（`install.sh:8`）。
+（`ffmpeg`, `mpv`）を導入するインストーラ。`sudo` を要する（`install.sh:15`）。
 
 ## 動作の概要と主要ロジック
 
-1. `sudo apt install -y ffmpeg mpv`（`install.sh:8`）
+`~/.config/mpv` がこの repo へのリンク以外で既に存在する場合、パッケージ導入前にエラーを返して保護する（`applications/mpv-player/install.sh` の既存設定確認）。
+
+1. `sudo apt install -y ffmpeg mpv`（`install.sh:15`）
 2. `${BIN_DIR}`（`~/.local/bin`）と `${CONFIG_DIR}`（`~/.config`）を作成
 3. `mpv-player.py` に実行権限を付与し、`${BIN_DIR}/mpv-player` へ `ln -sfn` で
-   シンボリックリンクを作成（`install.sh:12-13`）
+   シンボリックリンクを作成（`install.sh:19-20`）
 4. `applications/mpv-player/` ディレクトリ自体を `~/.config/mpv` へ
    シンボリックリンク（`mpv.conf` / `input.conf` を mpv に認識させるため）
 

@@ -209,7 +209,8 @@ chmod +x "$fixture/bin/gnome-extensions"
 
 if HOME="$fixture/home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/install-all.sh" > "$fixture/success" 2>&1 \
     && grep -q '^SUCCESS: dolphin$' "$fixture/success" \
-    && grep -q '^SUCCESS: tmux-switch-us-input$' "$fixture/success"; then
+    && grep -q '^SUCCESS: tmux-switch-us-input$' "$fixture/success" \
+    && awk '/^SUCCESS: dolphin$/ { found=1; if (previous !~ /ran: .*\/applications\/dolphin$/) exit 1 } { previous=$0 } END { if (!found) exit 1 }' "$fixture/success"; then
     pass "all steps succeed"
 else
     fail "all steps succeed"
@@ -226,6 +227,131 @@ elif grep -q '^FAILED: dolphin$' "$fixture/failure" \
     pass "failures are reported and later steps run"
 else
     fail "failures are reported and later steps run"
+fi
+
+mkdir -p "$fixture/conflict/.local/share/gnome-shell/extensions/fep-switcher@local"
+printf 'keep\n' > "$fixture/conflict/.local/share/gnome-shell/extensions/fep-switcher@local/marker"
+if HOME="$fixture/conflict" PATH="$fixture/bin:$PATH" bash "$fixture/repo/install-all.sh" > "$fixture/conflict-output" 2>&1; then
+    fail "existing extension conflict returns nonzero"
+elif [ -f "$fixture/conflict/.local/share/gnome-shell/extensions/fep-switcher@local/marker" ] \
+    && grep -q '^FAILED: fep-switcher$' "$fixture/conflict-output" \
+    && grep -q '^SUCCESS: tmux-switch-us-input$' "$fixture/conflict-output"; then
+    pass "existing extension is preserved and later steps run"
+else
+    fail "existing extension is preserved and later steps run"
+fi
+
+if HOME="$fixture_home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/install-all.sh" > "$fixture/repeat" 2>&1 \
+    && grep -q '^SUCCESS: fep-switcher$' "$fixture/repeat"; then
+    pass "managed extensions can be installed again"
+else
+    fail "managed extensions can be installed again"
+fi
+rm -rf "$fixture"
+
+# -----------------------------------------
+echo ""
+echo "--- Test 10: keyd configuration protection ---"
+fixture="$(mktemp -d)"
+mkdir -p "$fixture/bin" "$fixture/keyd-source"
+sed -e "s|/etc/keyd|$fixture/keyd-target|g" \
+    -e "s|/usr/local/bin/fep-toggle|$fixture/bin/fep-toggle|g" \
+    "$REPO_DIR/applications/keyd/install.sh" > "$fixture/keyd-source/install.sh"
+cp "$REPO_DIR/applications/keyd/fep-toggle.sh" "$fixture/keyd-source/fep-toggle.sh"
+ln -s /bin/true "$fixture/bin/keyd"
+cat > "$fixture/bin/sudo" <<'EOF'
+#!/bin/bash
+exec "$@"
+EOF
+chmod +x "$fixture/bin/sudo"
+mkdir -p "$fixture/keyd-target"
+printf 'keep\n' > "$fixture/keyd-target/marker"
+if PATH="$fixture/bin:$PATH" bash "$fixture/keyd-source/install.sh" > "$fixture/conflict-output" 2>&1; then
+    fail "keyd rejects existing configuration"
+elif [ -f "$fixture/keyd-target/marker" ]; then
+    pass "keyd preserves existing configuration"
+else
+    fail "keyd preserves existing configuration"
+fi
+mv "$fixture/keyd-target" "$fixture/saved"
+if PATH="$fixture/bin:$PATH" bash "$fixture/keyd-source/install.sh" > "$fixture/install-output" 2>&1 \
+    && PATH="$fixture/bin:$PATH" bash "$fixture/keyd-source/install.sh" > "$fixture/repeat-output" 2>&1 \
+    && [ "$(readlink "$fixture/keyd-target")" = "$fixture/keyd-source" ]; then
+    pass "keyd succeeds on install and rerun"
+else
+    fail "keyd succeeds on install and rerun"
+fi
+rm -rf "$fixture"
+
+# -----------------------------------------
+echo ""
+echo "--- Test 8: configuration conflicts and reruns ---"
+
+fixture="$(mktemp -d)"
+mkdir -p "$fixture/bin" "$fixture/repo/applications"
+cat > "$fixture/bin/sudo" <<'EOF'
+#!/bin/bash
+exit 0
+EOF
+chmod +x "$fixture/bin/sudo"
+for name in alacritty mpv-player yt-dlp espanso; do
+    cp -R "$REPO_DIR/applications/$name" "$fixture/repo/applications/$name"
+done
+ln -s /bin/true "$fixture/bin/yt-dlp"
+ln -s /bin/true "$fixture/bin/espanso"
+for entry in alacritty:alacritty mpv-player:mpv yt-dlp:yt-dlp espanso:espanso; do
+    name="${entry%%:*}"
+    config="${entry#*:}"
+    test_home="$fixture/user-$name"
+    mkdir -p "$test_home/.config/$config"
+    printf 'keep\n' > "$test_home/.config/$config/marker"
+    if HOME="$test_home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/applications/$name/install.sh" >/dev/null 2>&1; then
+        fail "$name rejects existing configuration"
+    elif [ -f "$test_home/.config/$config/marker" ]; then
+        pass "$name preserves existing configuration"
+    else
+        fail "$name preserves existing configuration"
+    fi
+    mv "$test_home/.config/$config" "$test_home/saved"
+    if HOME="$test_home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/applications/$name/install.sh" >/dev/null 2>&1 \
+        && HOME="$test_home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/applications/$name/install.sh" >/dev/null 2>&1 \
+        && [ "$(readlink "$test_home/.config/$config")" = "$fixture/repo/applications/$name" ]; then
+        pass "$name succeeds on install and rerun"
+    else
+        fail "$name succeeds on install and rerun"
+    fi
+done
+rm -rf "$fixture"
+
+# -----------------------------------------
+echo ""
+echo "--- Test 9: core-tools failure propagation ---"
+fixture="$(mktemp -d)"
+mkdir -p "$fixture/bin"
+cat > "$fixture/bin/sudo" <<'EOF'
+#!/bin/bash
+if [[ "$1" == apt && "$2" == update && "${FAIL_APT:-0}" == 1 ]]; then exit 1; fi
+if [[ "$1" == tee ]]; then cat >/dev/null; fi
+exit 0
+EOF
+cat > "$fixture/bin/curl" <<'EOF'
+#!/bin/bash
+exit 1
+EOF
+chmod +x "$fixture/bin/sudo" "$fixture/bin/curl"
+if FAIL_APT=1 PATH="$fixture/bin:$PATH" bash "$REPO_DIR/scripts/core-tools/install.sh" > "$fixture/apt-output" 2>&1; then
+    fail "apt update failure propagates"
+elif grep -q '\[1/10\] Done' "$fixture/apt-output"; then
+    fail "apt update failure stops the first step"
+else
+    pass "apt update failure propagates"
+fi
+if USER=test PATH="$fixture/bin:$PATH" bash "$REPO_DIR/scripts/core-tools/install.sh" > "$fixture/curl-output" 2>&1; then
+    fail "download failure propagates through pipeline"
+elif grep -q '\[5/10\] Done' "$fixture/curl-output"; then
+    fail "download failure stops the Docker step"
+else
+    pass "download failure propagates through pipeline"
 fi
 rm -rf "$fixture"
 

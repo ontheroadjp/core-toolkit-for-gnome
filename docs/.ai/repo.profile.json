@@ -15,17 +15,17 @@
     "apply_gnome_settings": {
       "run": "./scripts/core-gnome-settings/apply-settings.sh",
       "evidence": "scripts/core-gnome-settings/apply-settings.sh:1 (#!/bin/bash), file mode 755",
-      "note": "Machine-agnostic gsettings only. No sudo required."
+      "note": "Configures GNOME and Mozc; uses sudo to install the fep-toggle sudoers rule."
     },
     "apply_t480s_settings": {
       "run": "./scripts/core-t480s-settings/apply-settings.sh",
       "evidence": "scripts/core-t480s-settings/apply-settings.sh:1 (#!/bin/bash), file mode 755",
-      "note": "ThinkPad-specific: writes battery charge thresholds via /sys/class/power_supply/BAT0/ (requires thinkpad_acpi kernel module and sudo). Will fail on non-ThinkPad hardware."
+      "note": "ThinkPad-specific: configures TLP charge thresholds at 70% and 85%; requires TLP and sudo."
     },
     "install_all": {
       "run": "./install-all.sh",
       "evidence": "install-all.sh:1 (#!/bin/bash), file mode 755",
-      "note": "Orchestrates all per-app install.sh: calls scripts/core-tools/install.sh, then applications/*/install.sh, then wires GNOME extensions and symlinks for fep-switcher, app-switch-us-input, tmux-switch-us-input. Prints manual steps for core-gnome-settings and core-t480s-settings."
+      "note": "Calls core-tools and selected application installers, configures two GNOME extensions and the tmux helper, reports each result, and prints manual steps. YouTube and some other modules require separate installation."
     },
     "install_packages_and_tools": {
       "run": "./scripts/core-tools/install.sh",

@@ -5,7 +5,7 @@ CI が存在しないため（`.github/` 不在を確認済み）、以下はす
 
 ## 前提
 
-- 対象OS: Ubuntu系（`apt` が使えること）。根拠: `scripts/core-tools/install.sh:9,26,37,49,66` が
+- 対象OS: Ubuntu系（`apt` が使えること）。根拠: `scripts/core-tools/install.sh:10,27,38,50,68` が
   すべて `sudo apt install` を呼んでいる。
 - 対象デスクトップ: GNOME Shell。根拠: `scripts/core-gnome-settings/apply-settings.sh` の `org.gnome.*` schema、
   `gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` の `org.gnome.Shell` DBus呼び出し。
@@ -32,11 +32,11 @@ CI が存在しないため（`.github/` 不在を確認済み）、以下はす
 ## 2. GNOME デスクトップ設定の適用
 
 ```bash
-# 機種不問・sudo 不要
+# 機種不問・sudo 必要
 ./scripts/core-gnome-settings/apply-settings.sh
 ```
 
-- `gsettings set/reset` のみで構成される。`sudo` 不要。
+- GNOME・Mozc 設定に加え、`fep-toggle` の sudoers ルール設置に `sudo` を使う（`scripts/core-gnome-settings/apply-settings.sh:131-162`）。
 - GNOME が動作する Ubuntu / GNOME 環境であれば機種を問わず利用できる。
 
 ThinkPad T480s 固有のバッテリー充電閾値を設定する場合は別スクリプトを使う:
@@ -61,11 +61,11 @@ ThinkPad T480s 固有のバッテリー充電閾値を設定する場合は別�
 # または個別インストール
 ./applications/alacritty/install.sh      # ~/.config/alacritty → applications/alacritty/
 ./applications/espanso/install.sh        # ~/.config/espanso → applications/espanso/
-./applications/mpv-player/install.sh     # ~/.local/bin/music, ~/.config/mpv → applications/mpv-player/
+./applications/mpv-player/install.sh     # ~/.local/bin/mpv-player, ~/.config/mpv → applications/mpv-player/
 ./applications/yt-dlp/install.sh         # ~/.config/yt-dlp → applications/yt-dlp/
 ./applications/chrome/install.sh         # ~/.local/bin/google-chrome-cdp（install-all.sh からも自動実行される）
 ./applications/dolphin/install.sh        # Dolphin と XWayland 起動用ユーザーエントリー
-sudo ./applications/keyd/install.sh      # /etc/keyd → applications/keyd/ (sudo 必要)
+./applications/keyd/install.sh           # /etc/keyd → applications/keyd/（内部で sudo を使用）
 
 # install-all.sh からは呼び出されない個別インストール
 ./applications/youtube/install.sh                    # ~/.local/bin/youtube（前提: google-chrome-cdp 導入済み）
@@ -75,6 +75,8 @@ sudo ./applications/keyd/install.sh      # /etc/keyd → applications/keyd/ (sud
 
 各 `install.sh` は `SCRIPT_DIR` を起点とした絶対パスで symlink を作成するため、
 リポジトリのクローン先に依存しない。
+
+keyd、Alacritty、mpv、yt-dlp、espanso の設定先や GNOME 拡張に別の既存設定がある場合は、削除・上書きせず該当処理が失敗する。内容を確認して必要なものを退避してから再実行する（`applications/keyd/install.sh`、各アプリの `install.sh`、`install-all.sh` の `install_extension`）。
 
 ## 4. Alacritty テーマの切り替え
 
@@ -118,7 +120,7 @@ cd ~/Videos && mpv-player video
 ```
 
 - `install.sh` は `applications/mpv-player/mpv-player.py` を
-  `~/.local/bin/mpv-player` へシンボリックリンクする。`sudo` は不要。
+  `~/.local/bin/mpv-player` へシンボリックリンクする。パッケージ導入には `sudo` が必要（`applications/mpv-player/install.sh`）。
 - `mpv-player music`/`mpv-player video` は起動時に main menu を表示し、
   実行時のカレントディレクトリ配下の音声/動画ファイル（モードごとの拡張子のみ）
   から playlist を作成する。メニュー 2 では fzf で絞り込まれた候補全件を
@@ -167,6 +169,8 @@ bash tests/test_install.sh
 bash tests/lint_shell.sh
 
 # 各モジュールのユニット／インテグレーションテスト
+python3 -m unittest discover -s scripts/core-t480s-settings/tests
+
 cd scripts/battery-alert && python3 -m unittest discover -s tests
 
 cd ../../applications/mpv-player && python3 -m unittest discover -s tests
@@ -176,6 +180,6 @@ cd ../../scripts/voice-input && bash tests/test_voice_input.sh
 cd ../vim-switch-us-input && bash tests/test-vim-switch-us-input.sh
 ```
 
-`scripts/core-gnome-settings/apply-settings.sh` 等のテストスイートは存在せず、
+`scripts/core-gnome-settings/apply-settings.sh` のテストスイートは存在せず、
 動作確認は実行後に GNOME の実際の挙動を目視で確認する運用である
 （未確認: 目視確認の具体的なチェックリストはリポジトリ内に存在しない）。

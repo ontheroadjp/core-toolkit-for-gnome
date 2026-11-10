@@ -22,10 +22,8 @@ sh -n gnome-extensions/gnome-overview-toggle/gnome-overview-toggle
 ```
 
 `shellcheck` の設定ファイル（`.shellcheckrc`）はリポジトリ内に
-存在しないため、`shellcheck` を使う場合はデフォルトルールで実行する
-（未確認: `shellcheck` 自体がこのマシンに導入されているかは
-`scripts/core-tools/install.sh` のインストール対象リストに含まれていないため、
-別途インストールが必要）。
+存在しないため、`shellcheck` を使う場合はデフォルトルールで実行する。
+`shellcheck` は `scripts/core-tools/install.sh` の導入対象には含まれないため、各実行環境で別途確認する。
 
 ## 2. install.sh の整合性テスト
 
@@ -33,12 +31,13 @@ sh -n gnome-extensions/gnome-overview-toggle/gnome-overview-toggle
 bash tests/test_install.sh
 ```
 
-以下の5点を検証する:
+以下の項目などを検証する:
 - 各 `install.sh` の構文チェック（shellcheck/bash -n）
 - `install-all.sh` が参照するファイル（mpv-player.py, espanso-toggle, keyd/default.conf 等）の実在確認
 - ルートの `install-all.sh` が全 per-app スクリプトを呼び出していること
 - ツールカバレッジ（build-essential, tmux, fzf, mise, ghq, claude 等が新スクリプト群でカバーされていること）
 - `t480s/t480s-apps-install.sh` が削除済みであること（リファクタリング完了確認）
+- 既存設定の保護、再実行、個別の結果表示と失敗後の継続（`tests/test_install.sh` の Test 6–10）
 
 ## 3. 実行可能ビットの確認
 

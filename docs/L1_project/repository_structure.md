@@ -21,6 +21,7 @@
 │   │   ├── google-chrome-cdp            # CDPオプション付きランチャースクリプト
 │   │   ├── google-chrome-cdp.desktop    # デスクトップエントリ
 │   │   └── install.sh
+│   ├── dolphin/                          # Dolphin の XWayland 起動設定
 │   ├── espanso/                          # espanso テキスト展開設定 + install.sh
 │   │   ├── config/default.yml           # espanso 本体設定（→ ~/.config/espanso/）
 │   │   ├── match/                       # トリガー定義
@@ -59,7 +60,7 @@
     │       ├── battery-alert.service
     │       └── battery-alert.timer
     ├── core-gnome-settings/              # 機種不問の GNOME 設定（gsettings）
-    │   ├── apply-settings.sh            # gsettings 一括適用（sudo 不要）
+    │   ├── apply-settings.sh            # GNOME・Mozc 設定と sudoers 登録
     │   └── README.md
     ├── core-t480s-settings/              # ThinkPad 固有設定（thinkpad_acpi 必須）
     │   ├── apply-settings.sh            # バッテリー充電閾値設定（sudo 必須）
@@ -95,7 +96,7 @@
 ### `install-all.sh`（ルート）
 全アプリの一括インストールオーケストレータ。`scripts/core-tools/install.sh` を最初に呼び出し、
 次いで `applications/{keyd,alacritty,mpv-player,yt-dlp,espanso,chrome,dolphin}/install.sh` を順に実行する
-（`install-all.sh:13-38`、全 `applications/*/` のうち `youtube/` は含まれない）。最後に GNOME 拡張（fep-switcher,
+（`install-all.sh:40-75`、全 `applications/*/` のうち `youtube/` は含まれない）。最後に GNOME 拡張（fep-switcher,
 app-switch-us-input）のシンボリックリンク作成・有効化と tmux-switch-us-input のリンクを張る。
 core-gnome-settings / core-t480s-settings は手動実行が必要な旨を表示する。
 `applications/youtube/install.sh`・`gnome-extensions/search-light/install.sh`・
@@ -103,9 +104,7 @@ core-gnome-settings / core-t480s-settings は手動実行が必要な旨を表�
 （`install-all.sh` 全体を確認済み）。
 
 ### `scripts/core-gnome-settings/apply-settings.sh`
-全行 `gsettings set/reset` で構成される（`apply-settings.sh:6-51`）。
-GNOME のアニメーション・キーボード・キーバインド・ワークスペース切替・フォントレンダリングを設定する。
-`sudo` 不要、機種を問わず利用可能。
+GNOME の設定に加えて Mozc の初期モードと fep-toggle のカスタムキーバインド・sudoers ルールを設定する（`scripts/core-gnome-settings/apply-settings.sh:3-25,27-77,89-162`）。機種を問わず利用でき、sudoers の登録に `sudo` が必要。
 
 ### `scripts/core-t480s-settings/apply-settings.sh`
 TLP の設定ファイルへ充電開始 70%・停止 85% を設定し、サービスを有効化して適用する
@@ -140,7 +139,7 @@ CDPオプション付きでGoogle Chromeを起動するランチャースクリ�
 デスクトップエントリを提供する。`install.sh` がこれらを `~/.local/bin/` と
 `~/.local/share/applications/` に配置する。未インストール時は `google-chrome-stable_current_amd64.deb`
 を `wget` で取得し `sudo apt install` する（`install.sh:8-13`）。
-ルートの `install-all.sh:38` から呼び出される。
+ルートの `install-all.sh:70` から呼び出される。
 
 ### `applications/dolphin/`
 Dolphin の apt 導入と XWayland 起動用ユーザーエントリーの生成を行う。既存または編集済みのエントリーを保護する。

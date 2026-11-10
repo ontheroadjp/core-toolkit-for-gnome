@@ -8,8 +8,8 @@ Alacritty に repo 内の `alacritty.toml` / `theme/` を読ませるインス�
 
 ## 動作の概要と主要ロジック
 
-1. `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:7`）
-2. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/alacritty"` で repo ディレクトリへリンク（`install.sh:9`）
+1. 既存の設定がこの repo へのリンク以外なら保護して終了し、`${CONFIG_DIR}`（`~/.config`）を作成する（`applications/alacritty/install.sh` の既存設定確認）
+2. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/alacritty"` で repo ディレクトリへリンク（`install.sh:16`）
 
 `set -Ceu`（`install.sh:2`）で実行する。
 
@@ -24,15 +24,14 @@ Alacritty に repo 内の `alacritty.toml` / `theme/` を読ませるインス�
 
 ## 統合ポイント
 
-- 呼び出し元: ルートの `install-all.sh:18`
+- 呼び出し元: ルートの `install-all.sh:50`
 - リンク対象: `applications/alacritty/`（`alacritty.toml`, `theme/`）
 - テスト: `tests/test_install.sh`（構文チェック、Test 6 で `-sfn` の静的確認と、
   一時 `HOME` で2回実行して repo 内にリンクが作られないことの確認）
 
 ## 注意事項・既知の制限
 
-- `~/.config/alacritty` が実ディレクトリ（symlink でない）として既に存在する場合、
-  `ln -sfn` はその配下にリンクを作る。置き換えは行わない
+- `~/.config/alacritty` が別の実ディレクトリまたは symlink の場合、保護してエラーを返す
 - repo を移動するとリンクが切れる
 
 ## 変更履歴（git log より自動生成）

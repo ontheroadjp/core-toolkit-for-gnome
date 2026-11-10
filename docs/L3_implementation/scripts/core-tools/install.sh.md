@@ -24,7 +24,7 @@
 
 ## 重要な設計判断
 
-- `set -eu`（`-C` は使わない）: apt や wget の出力はリダイレクトしないため noclobber 不要
+- `set -euo pipefail` により apt の失敗とダウンロードを含むパイプラインの失敗を報告する。最初の apt update と install は別コマンドとして実行する（`scripts/core-tools/install.sh:2-10`）
 - apt 系（[1][2][3][4][5]）は存在チェックなし — `apt install` の冪等性に委ねる
 - Docker は Ubuntu の公式 apt repository を deb822 形式で登録する。対象システムの os-release から `UBUNTU_CODENAME` を優先し、未定義なら `VERSION_CODENAME` を使う。実行環境に存在するファイルのため、読み込み行に限り ShellCheck の SC1091 を抑制する（`install.sh:59-65`）
 - Docker の sudo なし実行設定は `docker` group の存在確認後に `sudo usermod -aG docker "$USER"` を実行する（`install.sh:72-75`）。反映にはログアウト/ログインまたは `newgrp docker` が必要であることを表示する（`install.sh:76-78`）

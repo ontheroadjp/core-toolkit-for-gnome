@@ -4,6 +4,13 @@ set -eu
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_DIR="${HOME}/.config"
 
+if [ -e "${CONFIG_DIR}/yt-dlp" ] || [ -L "${CONFIG_DIR}/yt-dlp" ]; then
+    if [ ! -L "${CONFIG_DIR}/yt-dlp" ] || [ "$(readlink "${CONFIG_DIR}/yt-dlp")" != "$SCRIPT_DIR" ]; then
+        echo "Existing configuration preserved: ${CONFIG_DIR}/yt-dlp" >&2
+        exit 1
+    fi
+fi
+
 if ! command -v yt-dlp >/dev/null 2>&1; then
     sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
     sudo chmod a+rx /usr/local/bin/yt-dlp

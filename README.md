@@ -73,7 +73,7 @@ cd ~/WORKSPACE/gnome-toolkit
 ./applications/alacritty/install.sh
 ./applications/espanso/install.sh
 ./applications/mpv-player/install.sh
-sudo ./applications/keyd/install.sh  # sudo 必要
+./applications/keyd/install.sh       # 内部で sudo を使用
 ./applications/yt-dlp/install.sh
 ./applications/chrome/install.sh     # install-all.sh からも自動実行される
 ./applications/dolphin/install.sh    # パッケージ導入には sudo が必要
