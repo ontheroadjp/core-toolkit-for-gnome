@@ -4,3 +4,10 @@ __pycache__/
 
 applications/espanso/match/private.yml
 root/home/user/.config/espanso/match/private.yml
+# core-toolkit-for-claude (install.sh)
+.codex/commands/
+.codex/hooks/
+.codex/scripts/
+.codex/skills/
+.codex/templates/
+.codex/hooks.json
