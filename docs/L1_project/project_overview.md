@@ -11,9 +11,9 @@ Ubuntu 24.04 LTS / GNOME 環境を再現可能にするための
 
 | 項目 | 内容 | 根拠 |
 |---|---|---|
-| 言語/ランタイム | POSIX sh / bash / Python 3 | `scripts/core-gnome-settings/apply-settings.sh:1` は `#!/bin/bash`、`gnome-extensions/gnome-overview-toggle/gnome-overview-toggle:1` は `#!/bin/sh`、`scripts/battery-alert/battery_alert.py` / `applications/mpv-player/mpv-player.py` は `#!/usr/bin/env python3` |
+| 言語/ランタイム | POSIX sh / bash / Python 3 / GNOME Shell JavaScript | `scripts/core-gnome-settings/apply-settings.sh:1`、`gnome-extensions/gnome-overview-toggle/gnome-overview-toggle:1`、`scripts/battery-alert/battery_alert.py:1`、`scripts/fep-switcher/extension.js` |
 | パッケージマネージャ（プロジェクト自体） | なし | `package.json` 等のマニフェスト不在を確認 |
-| OSパッケージマネージャ（実行対象） | apt（Ubuntu/Debian系） | `scripts/core-tools/install.sh:9,26,37,49` |
+| OSパッケージマネージャ（実行対象） | apt（Ubuntu/Debian系） | `scripts/core-tools/install.sh:9-10,27-32,38-50` |
 | CI | なし | `.github/` ディレクトリ不在を確認 |
 | テスト | 手動実行（unittest / bash） | `tests/test_install.sh`、`tests/lint_shell.sh`、各 `scripts/*/tests/`、`applications/mpv-player/tests/` |
 | 対象デスクトップ環境 | GNOME Shell | `scripts/core-gnome-settings/apply-settings.sh` の `org.gnome.*` schema、`gnome-extensions/gnome-overview-toggle/gnome-overview-toggle` の `org.gnome.Shell` DBus 呼び出し |
@@ -25,25 +25,25 @@ OSディストリビューションは Ubuntu 24.04 LTS (Noble Numbat)。
 ## 主要機能（実装から確認）
 
 1. **GNOME デスクトップ設定の一括適用** — `scripts/core-gnome-settings/apply-settings.sh`
-   - アニメーション有効化（`apply-settings.sh:6`）
-   - キーリピート速度設定（`apply-settings.sh:14-16`）
-   - 入力ソース切り替えを Ctrl+Space に変更（`apply-settings.sh:21`）
-   - ウィンドウ切替に Ctrl+Tab を追加、switch-panels をデフォルトにリセット（`apply-settings.sh:27-30`）
-   - ワークスペース切替を Ctrl+1〜4 に設定（`apply-settings.sh:35-38`）
-   - ウィンドウドラッグの修飾キーを Super から Ctrl に変更（`apply-settings.sh:43`）
-   - フォントヒンティング/アンチエイリアス設定（`apply-settings.sh:50-51`）
-   - 機種不問・`sudo` 不要
+   - アニメーション有効化（`scripts/core-gnome-settings/apply-settings.sh:30`）
+   - キーリピート速度設定（`scripts/core-gnome-settings/apply-settings.sh:38-40`）
+   - 入力ソース切替用のカスタムキー登録（`scripts/core-gnome-settings/apply-settings.sh:43-47,89-129`）
+   - ウィンドウ切替に Ctrl+Tab を追加し、switch-panels をリセット（`scripts/core-gnome-settings/apply-settings.sh:53-56`）
+   - ワークスペース切替を Ctrl+1〜4 に設定（`scripts/core-gnome-settings/apply-settings.sh:61-64`）
+   - ウィンドウドラッグの修飾キーを Ctrl に設定（`scripts/core-gnome-settings/apply-settings.sh:69`）
+   - フォントヒンティング/アンチエイリアス設定（`scripts/core-gnome-settings/apply-settings.sh:76-77`）
+   - 機種不問。`fep-toggle` の sudoers ルール設置に `sudo` が必要（`scripts/core-gnome-settings/apply-settings.sh:131-162`）
 
 1a. **ThinkPad 固有: バッテリー充電閾値設定** — `scripts/core-t480s-settings/apply-settings.sh`
-   - バッテリー充電開始/停止閾値を30%/85%に設定（`apply-settings.sh:8-9`、`sudo` 必須）
-   - `thinkpad_acpi` カーネルモジュール必須（ThinkPad 専用 sysfs 属性）
+   - TLP の充電開始/停止閾値を70%/85%に設定（`scripts/core-t480s-settings/apply-settings.sh:19-32`、`sudo` 必須）
+   - TLP と ThinkPad の充電閾値対応が必要
 
 2. **開発・利用ツールのセットアップ** — `scripts/core-tools/install.sh`
-   - 基本開発ツール一式の apt インストール（`core-tools/install.sh:9-20`）
-   - システムユーティリティ（hyperfine, rclone, gocryptfs）の導入（`core-tools/install.sh:26-31`）
-   - システム監視ツール（htop, ncdu, nethogs, iftop, whois, arp-scan）の導入（`core-tools/install.sh:37-43`）
-   - GNOME 拡張管理ツールの導入（`core-tools/install.sh:49`）
-   - `mise` 経由での Node.js 24 のセットアップ（`core-tools/install.sh:83-90`）
+   - 基本開発ツール一式の apt インストール（`scripts/core-tools/install.sh:9-21`）
+   - システムユーティリティ（hyperfine, rclone, gocryptfs）の導入（`scripts/core-tools/install.sh:27-32`）
+   - システム監視ツール（htop, ncdu, nethogs, iftop, whois, arp-scan）の導入（`scripts/core-tools/install.sh:38-44`）
+   - GNOME 拡張管理ツールの導入（`scripts/core-tools/install.sh:50`）
+   - `mise` 経由での Node.js 24 のセットアップ（`scripts/core-tools/install.sh:85-91`）
    - `gh` (GitHub CLI) / `ghq` の条件付きインストール（`core-tools/install.sh:94-120`）
    - Claude Code / OpenAI Codex CLI の条件付きインストール（`core-tools/install.sh:124-141`）
 
@@ -70,15 +70,13 @@ OSディストリビューションは Ubuntu 24.04 LTS (Noble Numbat)。
 
 6. **バッテリー低下通知** — `scripts/battery-alert/`
    - `battery_alert.py`（標準ライブラリのみ）が `/sys/class/power_supply/BAT*`
-     を読み、`.env` の `NOTIFY_THRESHOLDS` のうち放電中に下回ったしきい値ごとに
-     `notify-send` で1回通知する。
+     を読み、放電中に新たに越えたしきい値のうち最も低いものを1回通知し、越えた全しきい値を記録する（`scripts/battery-alert/battery_alert.py:90-112`）。
    - systemd timer（`.config/systemd/user/battery-alert.timer`）が定期実行。
    - `tests/test_battery_alert.py` に `unittest` ベースのテストがある。
 
-7. **mpv music launcher** — `applications/mpv-player/`
-   - `~/Music` 配下の音声/動画ファイルを対象に playlist を作成し、
-     `mpv --no-video` で再生する（`applications/mpv-player/mpv-player.py`）。
-   - `install.sh` で `~/.local/bin/music` へのシンボリックリンクを作成する。
+7. **mpv music/video launcher** — `applications/mpv-player/`
+   - 実行時のカレントディレクトリ配下からモード別にファイルを選び playlist を作成する（`applications/mpv-player/mpv-player.py:284-312`）。
+   - `install.sh` で `~/.local/bin/mpv-player` へのシンボリックリンクを作成する（`applications/mpv-player/install.sh`）。
 
 8. **FEP 入力ソース切替（4コンポーネント構成）** — `scripts/fep-switcher/` 他
    - `fep-switcher`: D-Bus サービス `SwitchToUs()` / `SwitchToJa()` を提供
@@ -97,7 +95,10 @@ OSディストリビューションは Ubuntu 24.04 LTS (Noble Numbat)。
 11. **Chrome CDP 専用プロファイル起動** — `applications/chrome/`
     - `--remote-debugging-port=9222` と専用 `--user-data-dir` を付与した Google Chrome
       ラッパー（`google-chrome-cdp`）。通常の Chrome プロファイルとは分離される。
-    - `install-all.sh:38` から呼び出される。未インストール時は Chrome の `.deb` を取得して導入する。
+    - `install-all.sh:70` から呼び出される。未インストール時は Chrome の `.deb` を取得して導入する。
+
+11a. **Dolphin の XWayland 起動** — `applications/dolphin/install.sh`
+    - Dolphin を導入し、システムの desktop entry を基にユーザーエントリーを生成する。未管理・編集済みの既存エントリーは保護する。
 
 12. **YouTube CDP ランチャー** — `applications/youtube/`
     - `applications/chrome/` の CDP エンドポイント（`localhost:9222`）へ接続し、既存の

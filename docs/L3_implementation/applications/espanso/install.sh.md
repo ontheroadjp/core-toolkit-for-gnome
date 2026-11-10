@@ -4,19 +4,19 @@
 
 espanso（Wayland 版 .deb）を導入し、`espanso-toggle` を `~/.local/bin` に、
 `applications/espanso/` ディレクトリ自体を `~/.config/espanso` にシンボリックリンクする
-インストーラ。未インストール時は `wget` と `sudo apt install` を行う（`install.sh:8-16`）。
+インストーラ。未インストール時は `wget` と `sudo apt install` を行う（`install.sh:15-23`）。
 
 ## 動作の概要と主要ロジック
 
 `~/.config/espanso` がこの repo へのリンク以外で既に存在する場合、パッケージ導入前にエラーを返して保護する（`applications/espanso/install.sh` の既存設定確認）。
 
 1. `espanso` コマンドがなければ GitHub releases から
-   `espanso-debian-wayland-amd64.deb` を取得して `sudo apt install`（`install.sh:8-13`）。
+   `espanso-debian-wayland-amd64.deb` を取得して `sudo apt install`（`install.sh:15-20`）。
    既にあればスキップ
-2. `${BIN_DIR}`（`~/.local/bin`）と `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:18`）
-3. `espanso-toggle` に実行権限を付与し `${BIN_DIR}/espanso-toggle` へ `ln -sf`（`install.sh:20-21`）
-4. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/espanso"` で repo ディレクトリへリンク（`install.sh:23`）
-5. `espanso service register` / `start` を手動で実行するよう案内する（`install.sh:27-31`）
+2. `${BIN_DIR}`（`~/.local/bin`）と `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:25`）
+3. `espanso-toggle` に実行権限を付与し `${BIN_DIR}/espanso-toggle` へ `ln -sf`（`install.sh:27-28`）
+4. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/espanso"` で repo ディレクトリへリンク（`install.sh:30`）
+5. `espanso service register` / `start` を手動で実行するよう案内する（`install.sh:34-38`）
 
 ## 重要な設計判断
 
@@ -29,7 +29,7 @@ espanso（Wayland 版 .deb）を導入し、`espanso-toggle` を `~/.local/bin` 
 
 ## 統合ポイント
 
-- 呼び出し元: ルートの `install-all.sh:33`
+- 呼び出し元: ルートの `install-all.sh:65`
 - リンク対象: `applications/espanso/`（`config/`, `match/`）、`applications/espanso/espanso-toggle`
 - `espanso-toggle` は GNOME custom keybinding（F9）から呼ばれる
 - テスト: `tests/test_install.sh`（構文チェック、`espanso-toggle` の存在確認、Test 6 で `-sfn` の静的確認）

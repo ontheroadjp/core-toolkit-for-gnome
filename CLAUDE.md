@@ -21,11 +21,10 @@ Ubuntu 24.04 LTS / GNOME 向けのシェルスクリプト・dotfiles 集。
 
 ## このリポジトリ固有の注意点
 
-- `scripts/core-t480s-settings/apply-settings.sh` は `sudo` を要する行を含む
-  （バッテリー充電閾値: `apply-settings.sh:8-9`、`echo 30 | sudo tee /sys/class/power_supply/BAT0/charge_start_threshold` 等）。
+- `scripts/core-t480s-settings/apply-settings.sh` は TLP の充電閾値設定とサービス適用に `sudo` を要する（`apply-settings.sh:19-32`）。
   AI が自律的にこれらを実行することは想定しない。実行内容の説明・修正案の提示まではAIの役割、実行はユーザー判断。
 - `curl | sh` / `wget | sudo tee` 形式のリモートインストーラ
-  （`scripts/core-tools/install.sh:56`（Docker GPGキー）, `:85`（mise）, `:96`（gh GPGキー）, `:125`（Claude Code））
+  （`scripts/core-tools/install.sh:58`（Docker GPGキー）, `:88`（mise）, `:99`（gh GPGキー）, `:128`（Claude Code））
   を変更する際は、出典URLの正当性を必ず確認すること。
 - `applications/` と `gnome-extensions/` 配下の設定ファイルは、各 `install.sh` が
   ホームディレクトリ（`~/.config/`、`~/.local/bin/` 等）へのシンボリックリンクとして
@@ -36,8 +35,8 @@ Ubuntu 24.04 LTS / GNOME 向けのシェルスクリプト・dotfiles 集。
 
 ## Local Tooling Environment
 
-Observed by /init-docs on 2026-07-02:
-- gh: 2.95.0 (installed at /usr/bin/gh)
+Observed by /init-docs on 2026-11-10:
+- gh: 2.102.0 (installed at /usr/bin/gh)
 - gh auth: logged in to github.com as ontheroadjp (keyring), SSH protocol
 - node: v24.16.0 (managed by mise, at ~/.local/share/mise/installs/node/24/bin/node)
 - npm: 11.13.0 (managed by mise)

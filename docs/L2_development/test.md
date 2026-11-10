@@ -8,12 +8,13 @@ CI が存在しないため（`.github/` 不在を確認済み）、すべての
 
 | 種別 | 対象 | フレームワーク | 件数 |
 |---|---|---|---|
-| リポジトリ全体の構文・構成検証 | 全 `install.sh` / `install-all.sh` | 独自 pass/fail カウンタ（bash） | `tests/test_install.sh`: 6 テストスイート |
+| リポジトリ全体の構文・構成検証 | 選択された `install.sh` / `install-all.sh` | 独自 pass/fail カウンタ（bash） | `tests/test_install.sh`: 10 テストグループ |
 | リポジトリ全体の構文チェック | 全 `install.sh` / `install-all.sh`（動的検出） | shellcheck（未導入時は `bash -n`） | `tests/lint_shell.sh`: 検出数に依存 |
 | ユニットテスト | `scripts/battery-alert/battery_alert.py` | Python `unittest` | 20件 |
 | ユニットテスト | `applications/mpv-player/mpv-player.py` | Python `unittest` | 31件 |
 | 統合テスト（モック） | `scripts/voice-input/voice-input.sh` | bash（`arecord`/`curl`/`notify-send`/`wl-copy` を関数で差し替え） | シェルスクリプト1本（アサーション列） |
 | 統合テスト（モック） | `scripts/vim-switch-us-input/plugin/vim-switch-us-input.vim` | sh + 実 vim（`-es` バッチモード、`dbus-send` をモック） | シェルスクリプト1本 |
+| 統合テスト（モック） | `scripts/core-t480s-settings/apply-settings.sh` | Python `unittest`、sudo と TLP をスタブ化 | 1件 |
 
 ## 1. `tests/test_install.sh` — install.sh 群の整合性検証
 
@@ -21,7 +22,7 @@ CI が存在しないため（`.github/` 不在を確認済み）、すべての
 bash tests/test_install.sh
 ```
 
-固定の `INSTALL_SCRIPTS` 配列（`tests/test_install.sh:13-22`）を対象に、以下6点を検証する:
+固定の `INSTALL_SCRIPTS` 配列（`tests/test_install.sh:13-22`）を対象に、以下を検証する:
 
 1. **構文チェック**（`test_install.sh:25-52`）: shellcheck があれば使用、なければ `bash -n`
 2. **参照ファイルの実在確認**（`test_install.sh:56-72`）: `mpv-player.py`, `espanso-toggle`,
@@ -45,7 +46,12 @@ bash tests/test_install.sh
    repo 内に `applications/alacritty/alacritty` が作られないこと、`~/.config/alacritty` が
    repo ディレクトリを指すことを確認する（issue #62 の自己参照リンクの回帰防止）
 
-終了コードは `[ "$FAIL" -eq 0 ]`（`test_install.sh:189`）。
+7. **実行結果と継続**: スタブを使って各処理の結果表示、失敗後の継続と拡張の既存設定保護を確認する。
+8. **設定競合と再実行**: 4アプリの既存設定保護と再実行を一時ディレクトリで確認する。
+9. **core-tools の失敗伝播**: apt update とダウンロードの失敗をスタブで確認する。
+10. **keyd 設定保護**: テスト用に配置先を書き換えたスクリプトで競合と再実行を確認する。
+
+終了コードは `[ "$FAIL" -eq 0 ]`（`tests/test_install.sh` 末尾）。
 
 ## 2. `tests/lint_shell.sh` — 全 install スクリプトの構文チェック
 
@@ -107,8 +113,10 @@ cd scripts/vim-switch-us-input && bash tests/test-vim-switch-us-input.sh
 
 ## カバレッジ方針
 
+`scripts/core-t480s-settings/tests/test_apply_settings.py` は一時 TLP 設定と sudo・TLP のスタブを使い、充電閾値の更新、無関係な設定の保持、再実行を確認する。`python3 -m unittest discover -s scripts/core-t480s-settings/tests` で実行する。
+
 - **手動実行前提の対象を優先**: GNOME 実機の挙動に依存する `scripts/core-gnome-settings/apply-settings.sh`
-  や `scripts/core-t480s-settings/apply-settings.sh` にはテストスイートがなく、目視確認が運用（未確認:
+  にはテストスイートがなく、目視確認が運用（未確認:
   具体的なチェックリストはリポジトリ内に存在しない）。
 - **外部インストーラを伴うスクリプトはモック優先**: `voice-input.sh`・`vim-switch-us-input.vim` は
   実機依存のコマンド（`arecord`, `dbus-send` 等）をモックして決定的に検証する。
@@ -120,9 +128,4 @@ cd scripts/vim-switch-us-input && bash tests/test-vim-switch-us-input.sh
 
 ## 未確認事項
 
-1. **`shellcheck` 自体の導入有無**
-   - 何が未確認か: 実行環境に `shellcheck` がインストールされているか。
-   - なぜ確定できないか: `scripts/core-tools/install.sh` のインストール対象リストに
-     `shellcheck` が含まれていないことは確認済みだが、ユーザーが別途導入している可能性は
-     リポジトリ内の情報だけでは判別できない。
-   - 何を見れば確定できるか: 実行環境で `command -v shellcheck` を実行する。
+- GNOME 上での実機動作は自動テストでは確認できない。対象の `scripts/core-gnome-settings/apply-settings.sh` と各 GNOME 拡張を、実際のデスクトップ環境で確認する。

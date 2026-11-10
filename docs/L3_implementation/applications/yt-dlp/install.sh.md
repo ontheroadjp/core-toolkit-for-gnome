@@ -4,16 +4,16 @@
 
 yt-dlp 本体を `/usr/local/bin/yt-dlp` に導入（または更新）し、`applications/yt-dlp/`
 ディレクトリ自体を `~/.config/yt-dlp` にシンボリックリンクして repo 内の `config` を
-読ませるインストーラ。`sudo` を要する（`install.sh:8-9,13`）。
+読ませるインストーラ。`sudo` を要する（`install.sh:15-20`）。
 
 ## 動作の概要と主要ロジック
 
 `~/.config/yt-dlp` がこの repo へのリンク以外で既に存在する場合、導入・更新前にエラーを返して保護する（`applications/yt-dlp/install.sh` の既存設定確認）。
 
 1. `yt-dlp` コマンドがなければ GitHub releases から `/usr/local/bin/yt-dlp` へ
-   `sudo wget` し実行権限を付与（`install.sh:7-10`）。既にあれば `sudo yt-dlp -U` で更新（`install.sh:12-13`）
-2. `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:16`）
-3. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/yt-dlp"` で repo ディレクトリへリンク（`install.sh:17`）
+   `sudo wget` し実行権限を付与（`install.sh:14-17`）。既にあれば `sudo yt-dlp -U` で更新（`install.sh:18-20`）
+2. `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:23`）
+3. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/yt-dlp"` で repo ディレクトリへリンク（`install.sh:24`）
 
 ## 重要な設計判断
 
@@ -25,7 +25,7 @@ yt-dlp 本体を `/usr/local/bin/yt-dlp` に導入（または更新）し、`ap
 
 ## 統合ポイント
 
-- 呼び出し元: ルートの `install-all.sh:28`
+- 呼び出し元: ルートの `install-all.sh:60`
 - リンク対象: `applications/yt-dlp/config`
 - テスト: `tests/test_install.sh`（構文チェック、`config` の存在確認、Test 6 で `-sfn` の静的確認）
 

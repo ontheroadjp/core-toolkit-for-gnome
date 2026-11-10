@@ -8,15 +8,15 @@ metadata:
 ## 目的・役割
 
 keyd 本体のインストール、`/etc/keyd` への設定配置、および `fep-toggle`
-ヘルパースクリプトの `/usr/local/bin` への配置を行う（`install.sh:1-25`）。
+ヘルパースクリプトの `/usr/local/bin` への配置を行う（`install.sh:1-38`）。
 
 ## 動作概要
 
 1. `keyd` コマンドが無ければ PPA 追加・apt インストール・サービス有効化を行う
-   （`install.sh:6-14`）。既にインストール済みならスキップ。
+   （`install.sh:13-21`）。既にインストール済みならスキップ。
 2. `/etc/keyd` が未作成なら本ディレクトリへのシンボリックリンクを作成する。同じリンクは再利用し、他の既存設定は削除せずエラーとする（`applications/keyd/install.sh` の既存設定確認）。
 3. `applications/keyd/fep-toggle.sh` に実行権限を付与し、`/usr/local/bin/fep-toggle`
-   （拡張子なし）へシンボリックリンクする（`install.sh:21-22`）。
+   （拡張子なし）へシンボリックリンクする（`install.sh:34-35`）。
 
 ## 重要な設計判断
 
