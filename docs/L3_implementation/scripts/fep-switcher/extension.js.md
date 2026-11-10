@@ -14,6 +14,9 @@ GNOME Shell 拡張。D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher`
 
 ## 動作概要
 
+- `enable()` は設定済みの US 入力を GNOME の入力履歴の先頭に移し、US を
+  アクティブにして keyd の状態を同期する。ログイン時に加え、拡張機能の手動再有効化時も
+  実行される（`extension.js:16-29`）。
 - `enable()` で D-Bus オブジェクトをエクスポートし、bus name を own する
   （`extension.js:15-27`）。
 - `SwitchToUs()`/`SwitchToJa()` はそれぞれ対応する入力ソース

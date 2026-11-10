@@ -1,5 +1,29 @@
 #!/bin/bash
 
+# Configure Mozc without replacing existing engine definitions or other settings.
+_configure_mozc_hiragana() {
+    local config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/mozc"
+    if [ -d "$HOME/.mozc" ]; then
+        config_dir="$HOME/.mozc"
+    fi
+    local config_file="$config_dir/ibus_config.textproto"
+    mkdir -p "$config_dir" || return 1
+    if [ ! -e "$config_file" ]; then
+        printf 'engines {\n  name: "mozc-jp"\n  longname: "Mozc"\n  layout: "default"\n  rank: 80\n}\n' > "$config_file" || return 1
+    fi
+    local tmp_file
+    tmp_file=$(mktemp "${config_dir}/.ibus_config.XXXXXX") || return 1
+    if ! awk '!/^[[:space:]]*active_on_launch[[:space:]]*:/ { print } END { print "active_on_launch: True" }' "$config_file" > "$tmp_file"; then
+        rm -f "$tmp_file"
+        return 1
+    fi
+    cat "$tmp_file" > "$config_file" || return 1
+    rm -f "$tmp_file"
+    echo 'Mozc initial input mode set to Hiragana (takes effect after restarting IBus or logging in again).'
+}
+
+_configure_mozc_hiragana || exit 1
+
 # -----------------------------------------
 # gnome animation
 # -----------------------------------------

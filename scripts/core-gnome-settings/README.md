@@ -11,6 +11,7 @@ ThinkPad に限らず、GNOME が動作する環境であれば機種を問わ�
 | キーリピート遅延 | 180ms |
 | キーリピート間隔 | 10ms |
 | IME 切替キー | `Ctrl+Space`（custom keybinding、`/usr/local/bin/fep-toggle` を起動） |
+| Mozc 起動時の入力モード | ひらがな（`active_on_launch: True`） |
 | ウィンドウ切替 | `Alt+Tab` + `Ctrl+Tab`（backward: `Shift+Alt+Tab` + `Shift+Ctrl+Tab`） |
 | switch-panels | デフォルトにリセット |
 | ワークスペース切替 | `Ctrl+1〜4` |
@@ -30,4 +31,5 @@ ThinkPad に限らず、GNOME が動作する環境であれば機種を問わ�
 `gsettings` の適用自体は `sudo` 不要だが、`Ctrl+Space` キーバインドの登録に
 加えて `fep-toggle` 用の passwordless sudo ルール（`/etc/sudoers.d/fep-toggle`）
 を `visudo -c` 検証の上で自動設置するため、実行時に `sudo` を要する。
-いずれも再実行しても重複登録されない（冪等）。設定はログアウト不要で即時反映される。
+いずれも再実行しても重複登録されない（冪等）。GNOME の設定は即時反映される。
+Mozc の設定は IBus の再起動または再ログイン後に反映される。

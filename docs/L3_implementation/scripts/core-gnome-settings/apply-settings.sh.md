@@ -15,6 +15,11 @@ sudo ルールの自動設置を行う（`apply-settings.sh:1-131`）。
 
 ## 動作概要
 
+- `_configure_mozc_hiragana()` は Mozc の IBus 設定で `active_on_launch` を
+  `True` にする。既存の同項目を削除して一つだけ追記し、その他の設定を保持する。
+  ファイルがない場合は `mozc-jp` エンジンを定義する。`~/.mozc` が存在すれば
+  そちらを優先し、それ以外は `XDG_CONFIG_HOME` または `~/.config` を使う
+  （`apply-settings.sh:3-25`）。変更の反映には IBus の再起動または再ログインが必要。
 - 冒頭は機種非依存の `gsettings set`/`reset` の羅列（アニメーション、キー
   リピート、ウィンドウ/ワークスペース切替、フォント、`apply-settings.sh:1-53`）。
 - `switch-input-source`（GNOME 標準の入力ソース切替キーバインド）はここでは
