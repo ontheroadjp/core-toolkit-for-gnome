@@ -18,7 +18,7 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 動作概要
 
-- `[main]` で CapsLock→LeftCtrl、LeftCtrl→LeftMeta、F1-F3→GNOME タイリングショートカットを定義する。PageUp/PageDown の矢印への割り当てはコメントアウトされており有効ではない（`default.conf:4-15`）。
+- `[main]` で CapsLock に `layer(control)`、LeftCtrl に `layer(meta)`、F1-F3 に GNOME タイリングショートカットを割り当てる。以前の直接割り当てと PageUp/PageDown の矢印への割り当てはコメントアウトされている（`default.conf:4-15`）。
 - `[after_k]` レイヤーで `j = macro(esc esc esc)` を定義する
   （`default.conf:17-18`）。このレイヤーは `k` に `oneshotk(after_k, k)` が
   バインドされている場合にのみ、`k` の直後の1打鍵で発火する。
@@ -30,7 +30,7 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
   （動的バインド、`applications/keyd/fep-toggle.sh.md` 参照）。Mozc → US へ
   戻ると同じ経路で `main.k = k` に戻され、`after_k` は無効化される。
 - `[control]` レイヤーで `space = macro(scrolllock 80ms leftcontrol)` を定義する
-  （`default.conf:19-34`）。CapsLock（`leftcontrol` として動作）または右 Ctrl を
+  （`default.conf:19-34`）。CapsLock（Control レイヤーとして動作）または右 Ctrl を
   押しながら Space を押すと、評価は keyd（evdev レイヤー、X11/Wayland/ibus より
   手前）で完結し、OS には Ctrl+Space ではなく Scroll_Lock が渡り、続けて 80ms 後に
   合成の Ctrl（leftcontrol）タップが送られる。
@@ -41,11 +41,9 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 重要な設計判断
 
-- `capslock = layer(control)` / `leftcontrol = layer(meta)` / `k = oneshotk(after_k, k)`
-  はコメントアウトされたまま残されている（`default.conf:7-8,11`）。前者2つは
-  レイヤー化による多機能キー案の検討メモであり未採用。後者の `k` バインドは
-  static には有効化せず、FEP 状態に応じて動的に `keyd bind` で切り替える設計
-  （後述）にしたため、ファイル上は無効のままにしてある。
+- `capslock = layer(control)` / `leftcontrol = layer(meta)` を使用する。以前の
+  `leftcontrol` / `leftmeta` への直接割り当ては、切り戻せるようコメントとして残す
+  （`default.conf:5-8`）。`keyd check` は修飾キーへの直接割り当てについて警告する。
 - `kj` を Mozc 変換キャンセル用エスケープコンボにする挙動を、静的な keyd 設定
   だけでなく GNOME 拡張（FEP 切替）と同期させる必要があったため、`k` の
   バインド自体は本ファイルではなく実行時の `keyd bind` コマンドで制御する
@@ -109,8 +107,7 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 - `keyd bind` による動的変更は `keyd` デーモン再起動やマシン再起動で失われ、
   ファイル上の（`k` バインドなしの）状態に戻る。次回 FEP 切替時に再同期される。
-- `after_k` レイヤーはコメントアウトされた layer 化案（`capslock`/`leftcontrol`）
-  とは独立した仕組みであり、両者は今回同時に検討されたが後者は未採用。
+- `after_k` レイヤーは `capslock` / `leftcontrol` の修飾キーレイヤーとは独立している。
 - 本ファイルの変更は `keyd` デーモンの inotify ベースの自動 reload に必ずしも
   即座に反映されない（実機検証で、複数回の連続編集のうち最初の 1 回しか自動
   reload されないケースを確認した）。変更後は `sudo keyd reload` を明示的に
@@ -119,7 +116,8 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 変更履歴（git log より自動生成）
 
-- 0bb2f0c fix(#81): preserve page up and page down keys
+- 397cf0e fix(#83): use keyd modifier layers
+- de1b0fe fix(#81): preserve page up and page down keys (#82)
 - adde6a1 #60 Send a single Ctrl tap after Scroll_Lock in fep-toggle to fix Ctrl-stuck (#61)
 - 6ef59d9 #56 Exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap (#57)
 - 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
