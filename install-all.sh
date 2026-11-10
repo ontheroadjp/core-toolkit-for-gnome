@@ -1,46 +1,65 @@
 #!/bin/bash
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+failed=0
+
+run_step() {
+    local name="$1"
+    shift
+    if "$@"; then
+        printf 'SUCCESS: %s\n' "$name"
+    else
+        printf 'FAILED: %s\n' "$name" >&2
+        failed=1
+    fi
+}
+
+# shellcheck disable=SC2317  # Invoked indirectly by run_step.
+install_extension() {
+    local name="$1" source="$2"
+    local target="${HOME}/.local/share/gnome-shell/extensions/${name}"
+    rm -rf "$target" && ln -sf "$source" "$target" && gnome-extensions enable "$name"
+}
 
 # ----------------------------------
 # core tools (no config in this repo)
 # ----------------------------------
-"${REPO_DIR}/scripts/core-tools/install.sh"
+run_step "core-tools" "${REPO_DIR}/scripts/core-tools/install.sh"
 
 # ----------------------------------
 # keyd
 # ----------------------------------
-"${REPO_DIR}/applications/keyd/install.sh"
+run_step "keyd" "${REPO_DIR}/applications/keyd/install.sh"
 
 # ----------------------------------
 # alacritty
 # ----------------------------------
-"${REPO_DIR}/applications/alacritty/install.sh"
+run_step "alacritty" "${REPO_DIR}/applications/alacritty/install.sh"
 
 # ----------------------------------
 # mpv
 # ----------------------------------
-"${REPO_DIR}/applications/mpv-player/install.sh"
+run_step "mpv-player" "${REPO_DIR}/applications/mpv-player/install.sh"
 
 # ----------------------------------
 # yt-dlp
 # ----------------------------------
-"${REPO_DIR}/applications/yt-dlp/install.sh"
+run_step "yt-dlp" "${REPO_DIR}/applications/yt-dlp/install.sh"
 
 # ----------------------------------
 # espanso
 # ----------------------------------
-"${REPO_DIR}/applications/espanso/install.sh"
+run_step "espanso" "${REPO_DIR}/applications/espanso/install.sh"
 
 # ----------------------------------
 # chrome
 # ----------------------------------
-"${REPO_DIR}/applications/chrome/install.sh"
+run_step "chrome" "${REPO_DIR}/applications/chrome/install.sh"
 
 # ----------------------------------
 # dolphin
 # ----------------------------------
-"${REPO_DIR}/applications/dolphin/install.sh" || exit 1
+run_step "dolphin" "${REPO_DIR}/applications/dolphin/install.sh"
 
 # ----------------------------------
 # settings > keyboard > custom shortcuts
@@ -51,21 +70,17 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # ----------------------------------
 # fep-switcher (GNOME extension: core)
 # ----------------------------------
-rm -rf "${HOME}/.local/share/gnome-shell/extensions/fep-switcher@local"
-ln -sf "${REPO_DIR}/scripts/fep-switcher" "${HOME}/.local/share/gnome-shell/extensions/fep-switcher@local"
-gnome-extensions enable fep-switcher@local
+run_step "fep-switcher" install_extension "fep-switcher@local" "${REPO_DIR}/scripts/fep-switcher"
 
 # ----------------------------------
 # app-switch-us-input (GNOME extension: window focus client)
 # ----------------------------------
-rm -rf "${HOME}/.local/share/gnome-shell/extensions/app-switch-us-input@local"
-ln -sf "${REPO_DIR}/scripts/app-switch-us-input" "${HOME}/.local/share/gnome-shell/extensions/app-switch-us-input@local"
-gnome-extensions enable app-switch-us-input@local
+run_step "app-switch-us-input" install_extension "app-switch-us-input@local" "${REPO_DIR}/scripts/app-switch-us-input"
 
 # ----------------------------------
 # tmux-switch-us-input
 # ----------------------------------
-ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.local/bin/switch-input-to-us"
+run_step "tmux-switch-us-input" ln -sf "${REPO_DIR}/scripts/tmux-switch-us-input/switch-input-to-us" "${HOME}/.local/bin/switch-input-to-us"
 
 # ----------------------------------
 # Manual steps
@@ -93,4 +108,4 @@ NOTE: On Wayland, newly installed GNOME extensions take effect after logout/logi
 EOF
 printf '\033[0m'
 
-exit 0
+exit "$failed"

@@ -185,6 +185,52 @@ rm -rf "$TMP_HOME"
 
 # -----------------------------------------
 echo ""
+echo "--- Test 7: per-step results and continuation ---"
+
+fixture="$(mktemp -d)"
+fixture_home="$fixture/home"
+mkdir -p "$fixture/repo/scripts" "$fixture/repo/applications" "$fixture/bin" \
+    "$fixture_home/.local/bin" "$fixture_home/.local/share/gnome-shell/extensions"
+cp "$ROOT_INSTALL" "$fixture/repo/install-all.sh"
+for script in "${EXPECTED_CALLS[@]}"; do
+    mkdir -p "$fixture/repo/$(dirname "$script")"
+    cat > "$fixture/repo/$script" <<'EOF'
+#!/bin/bash
+printf 'ran: %s\n' "${BASH_SOURCE[0]%/install.sh}"
+[[ "${BASH_SOURCE[0]}" != *"/${FAIL_STEP:-never}/install.sh" ]]
+EOF
+    chmod +x "$fixture/repo/$script"
+done
+cat > "$fixture/bin/gnome-extensions" <<'EOF'
+#!/bin/bash
+[[ "$*" != *"${FAIL_EXTENSION:-never}"* ]]
+EOF
+chmod +x "$fixture/bin/gnome-extensions"
+
+if HOME="$fixture/home" PATH="$fixture/bin:$PATH" bash "$fixture/repo/install-all.sh" > "$fixture/success" 2>&1 \
+    && grep -q '^SUCCESS: dolphin$' "$fixture/success" \
+    && grep -q '^SUCCESS: tmux-switch-us-input$' "$fixture/success"; then
+    pass "all steps succeed"
+else
+    fail "all steps succeed"
+fi
+
+if HOME="$fixture/home" PATH="$fixture/bin:$PATH" FAIL_STEP=dolphin FAIL_EXTENSION=fep-switcher@local \
+    bash "$fixture/repo/install-all.sh" > "$fixture/failure" 2>&1; then
+    fail "failures return nonzero"
+elif grep -q '^FAILED: dolphin$' "$fixture/failure" \
+    && grep -q '^FAILED: fep-switcher$' "$fixture/failure" \
+    && grep -q '^SUCCESS: app-switch-us-input$' "$fixture/failure" \
+    && grep -q '^SUCCESS: tmux-switch-us-input$' "$fixture/failure" \
+    && grep -q 'Manual step: ~/.tmux.conf' "$fixture/failure"; then
+    pass "failures are reported and later steps run"
+else
+    fail "failures are reported and later steps run"
+fi
+rm -rf "$fixture"
+
+# -----------------------------------------
+echo ""
 echo "=============================="
 echo "Results: ${PASS} passed, ${FAIL} failed"
 echo "=============================="
