@@ -73,5 +73,6 @@ GNOME Shell 拡張。D-Bus サービス `org.gnome.Shell.Extensions.FepSwitcher`
 
 ## 変更履歴（git log より自動生成）
 
+- 21f4bf4 feat(#66): initialize English and Mozc input modes
 - 9edfbd9 feat(#47): sync keyd kj-escape state with FEP switching and automate install/keybinding/sudoers setup
 - 478c73d refactor(#15): split into fep-switcher core and app-switch-us-input client
