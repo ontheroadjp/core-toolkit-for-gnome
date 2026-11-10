@@ -1,3 +1,4 @@
+-o "%(title)s.%(ext)s"
 --js-runtimes node
 --embed-metadata
 --embed-thumbnail
