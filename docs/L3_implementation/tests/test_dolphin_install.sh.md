@@ -7,3 +7,7 @@
 ## 制限
 
 システムに Dolphin の desktop entry が必要。GNOME 起動とドラッグ＆ドロップは実機確認する。
+
+## 変更履歴（git log より自動生成）
+
+- 588948d feat(#75): configure dolphin xwayland launch

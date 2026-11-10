@@ -53,6 +53,8 @@ Ubuntu / GNOME が動作する環境であれば機種を問わず利用でき�
   `~/.config/yt-dlp` へのシンボリックリンクを作成する。
 - `applications/chrome/` — CDP（`--remote-debugging-port=9222`）を有効化した専用プロファイルの
   Google Chrome ラッパー（`google-chrome-cdp`）。`install-all.sh` から自動実行される。
+- `applications/dolphin/` — Dolphin を導入し、XWayland で起動するユーザー用エントリーを生成する。
+  更新・検証・削除の手順は同ディレクトリの README を参照。
 - `applications/youtube/` — CDP 経由で既存の YouTube タブを再利用して開く CLI ランチャー
   （`youtube`）。`applications/chrome/` の導入が前提。個別実行が必要（`install-all.sh` には含まれない）。
 - `gnome-extensions/search-light/` — 入力ソースを US に切替後、search-light 拡張の
@@ -74,6 +76,7 @@ cd ~/WORKSPACE/gnome-toolkit
 sudo ./applications/keyd/install.sh  # sudo 必要
 ./applications/yt-dlp/install.sh
 ./applications/chrome/install.sh     # install-all.sh からも自動実行される
+./applications/dolphin/install.sh    # パッケージ導入には sudo が必要
 
 # install-all.sh には含まれない個別インストール
 ./applications/youtube/install.sh                    # 前提: applications/chrome/install.sh 実行済み
@@ -142,6 +145,7 @@ bash tests/test_install.sh
 
 # 全 install.sh を shellcheck（未インストールの場合は bash -n）で検証
 bash tests/lint_shell.sh
+bash tests/test_dolphin_install.sh  # Dolphin のシステムエントリーが必要
 
 # 各モジュールのユニット／インテグレーションテスト
 python3 -m unittest discover -s scripts/battery-alert/tests

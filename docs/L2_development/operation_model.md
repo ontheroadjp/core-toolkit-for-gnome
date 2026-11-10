@@ -64,6 +64,7 @@ ThinkPad T480s 固有のバッテリー充電閾値を設定する場合は別�
 ./applications/mpv-player/install.sh     # ~/.local/bin/music, ~/.config/mpv → applications/mpv-player/
 ./applications/yt-dlp/install.sh         # ~/.config/yt-dlp → applications/yt-dlp/
 ./applications/chrome/install.sh         # ~/.local/bin/google-chrome-cdp（install-all.sh からも自動実行される）
+./applications/dolphin/install.sh        # Dolphin と XWayland 起動用ユーザーエントリー
 sudo ./applications/keyd/install.sh      # /etc/keyd → applications/keyd/ (sudo 必要)
 
 # install-all.sh からは呼び出されない個別インストール

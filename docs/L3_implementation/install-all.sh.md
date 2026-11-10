@@ -7,3 +7,8 @@
 ## 統合・制限
 
 システムパッケージ導入やユーザー設定への変更を伴う。個別手順は各モジュールを参照。
+
+## 変更履歴（git log より自動生成）
+
+- 588948d feat(#75): configure dolphin xwayland launch
+- d3f2eab chore: rename install.sh to install-all.sh and add manual steps for settings scripts

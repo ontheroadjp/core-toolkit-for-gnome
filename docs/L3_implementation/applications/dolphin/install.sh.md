@@ -11,3 +11,7 @@ Dolphin の apt パッケージと、XWayland 起動用のユーザー desktop e
 ## 統合
 
 `install-all.sh` と個別実行から呼び出す。手順は `applications/dolphin/README.md` に記載する。
+
+## 変更履歴（git log より自動生成）
+
+- 588948d feat(#75): configure dolphin xwayland launch
