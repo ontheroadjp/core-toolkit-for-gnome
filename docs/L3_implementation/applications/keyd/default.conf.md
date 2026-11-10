@@ -116,7 +116,8 @@ Ctrl+Shift+Space を届けるための明示的な例外バインドも定義す
 
 ## 変更履歴（git log より自動生成）
 
-- 0bb2f0c fix(#81): preserve page up and page down keys
+- 397cf0e fix(#83): use keyd modifier layers
+- de1b0fe fix(#81): preserve page up and page down keys (#82)
 - adde6a1 #60 Send a single Ctrl tap after Scroll_Lock in fep-toggle to fix Ctrl-stuck (#61)
 - 6ef59d9 #56 Exempt Ctrl+Shift+Space from keyd's Ctrl+Space-to-Scroll_Lock remap (#57)
 - 30a63a6 #49 Fix Ctrl+Space fep-toggle being swallowed by Mozc during composition (#50)
