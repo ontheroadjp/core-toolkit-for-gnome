@@ -94,7 +94,7 @@
 
 ### `install-all.sh`（ルート）
 全アプリの一括インストールオーケストレータ。`scripts/core-tools/install.sh` を最初に呼び出し、
-次いで `applications/{keyd,alacritty,mpv-player,yt-dlp,espanso,chrome}/install.sh` を順に実行する
+次いで `applications/{keyd,alacritty,mpv-player,yt-dlp,espanso,chrome,dolphin}/install.sh` を順に実行する
 （`install-all.sh:13-38`、全 `applications/*/` のうち `youtube/` は含まれない）。最後に GNOME 拡張（fep-switcher,
 app-switch-us-input）のシンボリックリンク作成・有効化と tmux-switch-us-input のリンクを張る。
 core-gnome-settings / core-t480s-settings は手動実行が必要な旨を表示する。
@@ -141,6 +141,9 @@ CDPオプション付きでGoogle Chromeを起動するランチャースクリ�
 `~/.local/share/applications/` に配置する。未インストール時は `google-chrome-stable_current_amd64.deb`
 を `wget` で取得し `sudo apt install` する（`install.sh:8-13`）。
 ルートの `install-all.sh:38` から呼び出される。
+
+### `applications/dolphin/`
+Dolphin の apt 導入と XWayland 起動用ユーザーエントリーの生成を行う。既存または編集済みのエントリーを保護する。
 
 ### `applications/youtube/`
 Chrome DevTools Protocol (CDP) 経由で YouTube タブを開閉・再利用する CLI ランチャー

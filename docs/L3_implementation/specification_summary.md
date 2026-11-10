@@ -232,6 +232,10 @@ Ubuntu 24.04 / GNOME (Wayland) での Typinator 相当のテキスト展開。
 | 呼び出し元 | ルート `install-all.sh:38` から自動実行される | `install-all.sh:38` |
 | テスト | `tests/test_install.sh:20,65-66,85,107` で install.sh の構文・参照ファイルを検証（機能テストではない） | ファイル内容確認済み |
 
+## Dolphin — XWayland 起動
+
+`applications/dolphin/install.sh` は Dolphin を apt で導入し、システムの desktop entry を基に XWayland 起動用ユーザーエントリーを生成する。再実行時は未変更の生成済みエントリーのみ更新し、既存またはユーザー編集済みのものは保護する（`applications/dolphin/install.sh:10-48`）。システム側の更新はインストーラー再実行で反映される。
+
 ## 11. `applications/youtube/` — YouTube CDP ランチャー
 
 | 項目 | 内容 | 根拠 |

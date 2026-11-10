@@ -18,6 +18,7 @@ INSTALL_SCRIPTS=(
     "applications/yt-dlp/install.sh"
     "applications/espanso/install.sh"
     "applications/chrome/install.sh"
+    "applications/dolphin/install.sh"
     "install-all.sh"
 )
 
@@ -84,6 +85,7 @@ EXPECTED_CALLS=(
     "applications/yt-dlp/install.sh"
     "applications/espanso/install.sh"
     "applications/chrome/install.sh"
+    "applications/dolphin/install.sh"
 )
 
 ROOT_INSTALL="${REPO_DIR}/install-all.sh"
