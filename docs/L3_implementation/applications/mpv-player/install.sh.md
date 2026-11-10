@@ -7,6 +7,8 @@
 
 ## 動作の概要と主要ロジック
 
+`~/.config/mpv` がこの repo へのリンク以外で既に存在する場合、パッケージ導入前にエラーを返して保護する（`applications/mpv-player/install.sh` の既存設定確認）。
+
 1. `sudo apt install -y ffmpeg mpv`（`install.sh:8`）
 2. `${BIN_DIR}`（`~/.local/bin`）と `${CONFIG_DIR}`（`~/.config`）を作成
 3. `mpv-player.py` に実行権限を付与し、`${BIN_DIR}/mpv-player` へ `ln -sfn` で

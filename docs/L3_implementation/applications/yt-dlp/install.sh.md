@@ -8,6 +8,8 @@ yt-dlp 本体を `/usr/local/bin/yt-dlp` に導入（または更新）し、`ap
 
 ## 動作の概要と主要ロジック
 
+`~/.config/yt-dlp` がこの repo へのリンク以外で既に存在する場合、導入・更新前にエラーを返して保護する（`applications/yt-dlp/install.sh` の既存設定確認）。
+
 1. `yt-dlp` コマンドがなければ GitHub releases から `/usr/local/bin/yt-dlp` へ
    `sudo wget` し実行権限を付与（`install.sh:7-10`）。既にあれば `sudo yt-dlp -U` で更新（`install.sh:12-13`）
 2. `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:16`）

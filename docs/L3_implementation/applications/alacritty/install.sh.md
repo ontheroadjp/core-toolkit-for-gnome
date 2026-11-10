@@ -8,7 +8,7 @@ Alacritty に repo 内の `alacritty.toml` / `theme/` を読ませるインス�
 
 ## 動作の概要と主要ロジック
 
-1. `${CONFIG_DIR}`（`~/.config`）を作成（`install.sh:7`）
+1. 既存の設定がこの repo へのリンク以外なら保護して終了し、`${CONFIG_DIR}`（`~/.config`）を作成する（`applications/alacritty/install.sh` の既存設定確認）
 2. `ln -sfn "${SCRIPT_DIR}" "${CONFIG_DIR}/alacritty"` で repo ディレクトリへリンク（`install.sh:9`）
 
 `set -Ceu`（`install.sh:2`）で実行する。
@@ -31,8 +31,7 @@ Alacritty に repo 内の `alacritty.toml` / `theme/` を読ませるインス�
 
 ## 注意事項・既知の制限
 
-- `~/.config/alacritty` が実ディレクトリ（symlink でない）として既に存在する場合、
-  `ln -sfn` はその配下にリンクを作る。置き換えは行わない
+- `~/.config/alacritty` が別の実ディレクトリまたは symlink の場合、保護してエラーを返す
 - repo を移動するとリンクが切れる
 
 ## 変更履歴（git log より自動生成）

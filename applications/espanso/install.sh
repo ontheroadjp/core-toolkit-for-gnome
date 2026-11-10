@@ -5,6 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN_DIR="${HOME}/.local/bin"
 CONFIG_DIR="${HOME}/.config"
 
+if [ -e "${CONFIG_DIR}/espanso" ] || [ -L "${CONFIG_DIR}/espanso" ]; then
+    if [ ! -L "${CONFIG_DIR}/espanso" ] || [ "$(readlink "${CONFIG_DIR}/espanso")" != "$SCRIPT_DIR" ]; then
+        echo "Existing configuration preserved: ${CONFIG_DIR}/espanso" >&2
+        exit 1
+    fi
+fi
+
 if ! command -v espanso >/dev/null 2>&1; then
     cd /tmp || exit
     wget https://github.com/espanso/espanso/releases/latest/download/espanso-debian-wayland-amd64.deb

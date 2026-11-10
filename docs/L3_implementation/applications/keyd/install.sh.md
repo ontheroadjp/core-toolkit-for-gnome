@@ -14,9 +14,7 @@ keyd 本体のインストール、`/etc/keyd` への設定配置、および `f
 
 1. `keyd` コマンドが無ければ PPA 追加・apt インストール・サービス有効化を行う
    （`install.sh:6-14`）。既にインストール済みならスキップ。
-2. `/etc/keyd` を削除し、本ディレクトリ（`applications/keyd/`）へのシンボリック
-   リンクとして再作成する（`install.sh:16-17`）。これにより `default.conf` の
-   変更が再インストールなしで反映される。
+2. `/etc/keyd` が未作成なら本ディレクトリへのシンボリックリンクを作成する。同じリンクは再利用し、他の既存設定は削除せずエラーとする（`applications/keyd/install.sh` の既存設定確認）。
 3. `applications/keyd/fep-toggle.sh` に実行権限を付与し、`/usr/local/bin/fep-toggle`
    （拡張子なし）へシンボリックリンクする（`install.sh:21-22`）。
 
@@ -42,6 +40,7 @@ keyd 本体のインストール、`/etc/keyd` への設定配置、および `f
 ## 注意事項・既知の制限
 
 - `/etc/keyd` の配置と `fep-toggle` の配置はいずれも `sudo` を要する。
+- パッケージ導入によって `/etc/keyd` が作成された場合も保護するため、内容を確認・退避してから再実行する必要がある。
 - 本スクリプトは `Ctrl+Space` キーバインドや sudoers ルールの設定は行わない
   （`scripts/core-gnome-settings/apply-settings.sh` の責務）。両者は別々に
   実行する必要がある。

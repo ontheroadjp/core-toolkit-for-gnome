@@ -8,6 +8,8 @@ espanso（Wayland 版 .deb）を導入し、`espanso-toggle` を `~/.local/bin` 
 
 ## 動作の概要と主要ロジック
 
+`~/.config/espanso` がこの repo へのリンク以外で既に存在する場合、パッケージ導入前にエラーを返して保護する（`applications/espanso/install.sh` の既存設定確認）。
+
 1. `espanso` コマンドがなければ GitHub releases から
    `espanso-debian-wayland-amd64.deb` を取得して `sudo apt install`（`install.sh:8-13`）。
    既にあればスキップ

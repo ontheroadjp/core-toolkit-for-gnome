@@ -1,12 +1,13 @@
 #!/bin/bash
-set -eu
+set -euo pipefail
 
 TOTAL=10
 
 # -----------------------------------------
 echo ""
 echo "[1/${TOTAL}] Installing dev tools ..."
-sudo apt update && sudo apt install -y \
+sudo apt update
+sudo apt install -y \
     build-essential \
     curl \
     unzip \
